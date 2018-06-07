@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">BankApp</string>
+    <string name="title_activity_login">Вход в личный кабинет</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="action_sign_in">Войти</string>
+    <string name="action_sign_in_short">Войти</string>
+    <string name="error_invalid_email">Этот адрес электронной почты недействителен</string>
+    <string name="error_invalid_password">Пароль слишком короткий</string>
+    <string name="error_incorrect_password">Этот пароль неверен</string>
+    <string name="error_field_required">Это поле обязательно к заполнению</string>
+
+
+</resources>
