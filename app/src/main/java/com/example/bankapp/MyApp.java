@@ -23,7 +23,7 @@ public class MyApp extends Application {
         return app;
     }
 
-    public DataBaseComponent appComponent(){
+    public DataBaseComponent dataBaseComponent(){
         return dataBaseComponent;
     }
 }//class MyApp

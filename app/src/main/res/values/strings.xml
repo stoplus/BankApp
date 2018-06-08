@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">BankApp</string>
+
     <string name="title_activity_login">Вход в личный кабинет</string>
+    <string name="title_activity_register">Регистрация нового пльзователя</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -11,6 +13,19 @@
     <string name="error_invalid_password">Пароль слишком короткий</string>
     <string name="error_incorrect_password">Этот пароль неверен</string>
     <string name="error_field_required">Это поле обязательно к заполнению</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="singIn">Войти</string>
+
+    <string name="successful_register">Регистрация прошла успешно. Введите Ваши данные.</string>
+
+
+    <string name="addCard">Зарегистрировать новую карту</string>
+    <string name="deleteCard">Удалить карту</string>
+    <string name="cardAdded">Карта добавлена</string>
+    <string name="cardDeleted">Карта удалена</string>
+    <string name="exit">Выход</string>
+
+
 
 
 </resources>

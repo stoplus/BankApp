@@ -4,29 +4,31 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-@Entity(tableName = "card")
+@Entity(tableName = "cards")
 public class Card {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
+    @ColumnInfo(name = "idUser")
+    private int idUser;
+
     @ColumnInfo(name = "cardNumber")
-    private int cardNumber;
+    private String cardNumber;
 
     @ColumnInfo(name = "totalAmount")
     private int totalAmount;
 
-    @ColumnInfo(name = "idHistory")
-    private int idHistory;
 
     @ColumnInfo(name = "pinCode")
-    private int pinCode;
+    private String pinCode;
 
-    public Card(int cardNumber, int totalAmount, int idHistory, int pinCode) {
+    public Card(int idUser, String cardNumber, int totalAmount, String pinCode) {
+        this.idUser = idUser;
         this.cardNumber = cardNumber;
         this.totalAmount = totalAmount;
-        this.idHistory = idHistory;
         this.pinCode = pinCode;
     }
+
 
     public int getId() {
         return id;
@@ -36,11 +38,19 @@ public class Card {
         this.id = id;
     }
 
-    public int getCardNumber() {
+    public int getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
+    }
+
+    public String getCardNumber() {
         return cardNumber;
     }
 
-    public void setCardNumber(int cardNumber) {
+    public void setCardNumber(String cardNumber) {
         this.cardNumber = cardNumber;
     }
 
@@ -52,19 +62,11 @@ public class Card {
         this.totalAmount = totalAmount;
     }
 
-    public int getIdHistory() {
-        return idHistory;
-    }
-
-    public void setIdHistory(int idHistory) {
-        this.idHistory = idHistory;
-    }
-
-    public int getPinCode() {
+    public String getPinCode() {
         return pinCode;
     }
 
-    public void setPinCode(int pinCode) {
+    public void setPinCode(String pinCode) {
         this.pinCode = pinCode;
     }
 }
