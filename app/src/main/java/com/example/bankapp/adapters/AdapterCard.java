@@ -2,11 +2,11 @@ package com.example.bankapp.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.bankapp.R;
 
@@ -20,11 +20,13 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.ViewHolder> {
     private LayoutInflater inflater;
     private List<Card> list;
     private OnItemListener onItemListener;
+    private Context context;
 
     public AdapterCard(Context context, List<Card> list, OnItemListener onItemListener) {
         this.inflater = LayoutInflater.from(context);
         this.list = new ArrayList<>(list);
         this.onItemListener = onItemListener;
+        this.context = context;
     }//AdapterForAdmin
 
     @Override
@@ -46,21 +48,23 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView cardNumber;
-        ConstraintLayout constraintLayout;
+        TextView totalAmount;
+        LinearLayout layout;
 
 
         private ViewHolder(View view) {
             super(view);
             cardNumber = view.findViewById(R.id.idTextView);
-            constraintLayout = view.findViewById(R.id.idConstraintLayout);
+            totalAmount = view.findViewById(R.id.idTotalAmount);
+            layout = view.findViewById(R.id.idConstraintLayout);
 
-            constraintLayout.setOnClickListener(new View.OnClickListener() {
+            layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     onItemListener.onItemClick(getAdapterPosition(), v);
                 }
             });
-            constraintLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            layout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     onItemListener.onItemLongClick(getAdapterPosition(), v);
@@ -73,6 +77,8 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         holder.cardNumber.setText(list.get(position).getCardNumber());
+        String total = String.valueOf(list.get(position).getTotalAmount());
+        holder.totalAmount.setText(String.format("%s %s", total, context.getResources().getString(R.string.uah)));
     }//onBindViewHolder
 
     public void deleteCardAdapter(int pos) {

@@ -18,14 +18,17 @@
 
     <string name="successful_register">Регистрация прошла успешно. Введите Ваши данные.</string>
 
-
     <string name="addCard">Зарегистрировать новую карту</string>
     <string name="deleteCard">Удалить карту</string>
     <string name="cardAdded">Карта добавлена</string>
     <string name="cardDeleted">Карта удалена</string>
     <string name="exit">Выход</string>
 
+    <string name="uah">грн.</string>
 
+    <string name="send_money">Перевести</string>
+    <string name="withdraw_money">Снять</string>
+    <string name="replenish_account">Пополнить</string>
 
 
 </resources>

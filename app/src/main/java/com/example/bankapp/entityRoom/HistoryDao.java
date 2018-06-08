@@ -12,8 +12,8 @@ import io.reactivex.Flowable;
 
 @Dao
 public interface HistoryDao {
-    @Query("SELECT * FROM histories ORDER BY id")
-    Flowable<List<History>> allHistories();
+    @Query("SELECT * FROM histories WHERE idSenderCard = :idCard")
+    Flowable<List<History>> allHistoryCard(int idCard);
 
     @Query("SELECT COUNT(*) from histories")
     int count();

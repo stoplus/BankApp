@@ -1,5 +1,6 @@
 package com.example.bankapp.ui;
 
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -45,9 +46,9 @@ public class MainActivity extends AppCompatActivity {
     private Disposable dispos;
     private RecyclerView recyclerView;
     private View view;
-    LinearLayout bloc;
+    private LinearLayout bloc;
     private int positionDelete = -1;
-    AdapterCard adapter;
+    private AdapterCard adapter;
     private boolean adapterFlag;
     private List<Card> tempListCards;
     private List<String> listAllNumbersCards;
@@ -95,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(int position, View v) {
                 //открываем историю
+                Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+                intent.putExtra("idCard", tempListCards.get(position).getId());
+                startActivity(intent);
             }
 
             @Override
@@ -203,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
                     tempListCards = listCards;
                     setupWidget();
                 });
-    }//getListImageObj
+    }//getListCardsUser
 
 
     public void getListAllNumbersCards() {

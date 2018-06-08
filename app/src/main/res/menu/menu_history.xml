@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/send_money"
+        android:title="@string/send_money" />
+
+    <item
+        android:id="@+id/withdraw_money"
+        android:title="@string/withdraw_money" />
+
+    <item
+        android:id="@+id/replenish_account"
+        android:title="@string/replenish_account" />
+
+</menu>
