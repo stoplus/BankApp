@@ -86,6 +86,9 @@ public class DialogChangeTotalAmount extends DialogFragment {
                 break;
             case WITHDRAW_MONEY:
                 title = "Снять деньги";
+                cardWherefrom.setVisibility(View.GONE);
+                cardWhere.setVisibility(View.GONE);
+                spinnerWhere.setVisibility(View.GONE);
                 break;
             case TRANSFER_MONEY:
                 title = "Перевод между картами";
@@ -116,6 +119,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
                                 break;
                             case WITHDRAW_MONEY:
 //                                title = "Снять деньги";
+                                withdraw(view);
                                 break;
                             case TRANSFER_MONEY:
 //                                title = "Перевод между картами";
@@ -152,10 +156,32 @@ public class DialogChangeTotalAmount extends DialogFragment {
             datable.onGetDataFromDialog(date,
                     enterAmountSum,
                     selectedCartSender.getId(),
-                    numCardRecipient);
+                    numCardRecipient, REPLENISH_CARD);
             dialogTemp.dismiss();
         } else
             Snackbar.make(view, "Введите сумму!", Snackbar.LENGTH_SHORT).show();
+    }//replenish
+
+
+    private void withdraw(View view) {
+        String amount = enterAmount.getText().toString();
+        if (!amount.isEmpty()) {
+            Date dateNow = new Date();
+            SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+            String date = formatForDateNow.format(dateNow);
+
+            int enterAmountSum = Integer.parseInt(amount);
+            String numCardRecipient = spinnerWherefrom.getSelectedItem().toString();
+
+            if (selectedCartSender.getTotalAmount() > enterAmountSum) {
+                //отправляем данные в активность с историей
+                datable.onGetDataFromDialog(date,
+                        enterAmountSum,
+                        selectedCartSender.getId(),
+                        numCardRecipient, WITHDRAW_MONEY);
+                dialogTemp.dismiss();
+            } else Snackbar.make(view, "Недостаточно средств!", Snackbar.LENGTH_SHORT).show();
+        } else Snackbar.make(view, "Введите сумму!", Snackbar.LENGTH_SHORT).show();
     }//replenish
 
 
@@ -176,16 +202,12 @@ public class DialogChangeTotalAmount extends DialogFragment {
                     datable.onGetDataFromDialog(date,
                             enterAmountSum,
                             selectedCartSender.getId(),
-                            numCardRecipient);
+                            numCardRecipient, TRANSFER_MONEY);
                     dialogTemp.dismiss();
-                } else {
-                    Snackbar.make(view, "Недостаточно средств!", Snackbar.LENGTH_SHORT).show();
-                }
-            } else
-                Snackbar.make(view, "Введите сумму!", Snackbar.LENGTH_SHORT).show();
-        } else
-            Snackbar.make(view, "Вы не можите указывать одну и туже карту!",
-                    Snackbar.LENGTH_SHORT).show();
+                } else Snackbar.make(view, "Недостаточно средств!", Snackbar.LENGTH_SHORT).show();
+            } else Snackbar.make(view, "Введите сумму!", Snackbar.LENGTH_SHORT).show();
+        } else Snackbar.make(view, "Вы не можите указывать одну и туже карту!",
+                Snackbar.LENGTH_SHORT).show();
     }//transfer
 
 
@@ -214,7 +236,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             String numCard = "";
             if (Objects.requireNonNull(getArguments()).getInt("Select_action") == TRANSFER_MONEY) {
-                numCard = spinnerWhere.getSelectedItem().toString();
+                numCard = spinnerWherefrom.getSelectedItem().toString();
             } else numCard = spinnerWherefrom.getSelectedItem().toString();
 
             getCardByNumberCard(numCard);
@@ -226,6 +248,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
     };
 
 
+   //получаем список карт пользователя
     private void getNumbersCard() {
         disposNubbersCard = cardDao.allNumbersCardUser(idUser)
                 .subscribeOn(Schedulers.io())

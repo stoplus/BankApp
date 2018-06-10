@@ -40,15 +40,18 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
     HistoryDao historyDao;
     @Inject
     UserDao userDao;
-    private Disposable dispos;
+    private Disposable disposListHistoryCard;
     private Disposable disposGetCardById;
+    private Disposable disposListCardsUser;
     private int idCard;
     private Card tempCard;
     public final static int REPLENISH_CARD = 2000;//пополнить
     public final static int WITHDRAW_MONEY = 2001;//Снять
     public final static int TRANSFER_MONEY = 2002;//перевод
     private boolean flagUpdateCard;
+//    private boolean flagUpdateRecipientCard;
     private History history;
+    private int selectedAction;
 
 
     @Override
@@ -68,27 +71,6 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
     }
 
 
-    private void getCard(int idCard) {
-        disposGetCardById = cardDao.getCardById(idCard)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(card -> {
-                    tempCard = card;
-                    disposGetCardById.dispose();
-                    TextView cardNumber = findViewById(R.id.idCardNumber);
-                    TextView totalAmount = findViewById(R.id.idTotalAmount);
-                    cardNumber.setText(card.getCardNumber());
-                    totalAmount.setText(String.valueOf(card.getTotalAmount()));
-
-                    if (flagUpdateCard) {
-                        tempCard.setTotalAmount(tempCard.getTotalAmount() + history.getAmount());
-                        updateCard(tempCard);
-                        flagUpdateCard = false;
-                    }
-                });
-    }//getCard
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_history, menu);
@@ -105,7 +87,7 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
         switch (id) {
             case R.id.send_money://перевести
                 args.putInt("Select_action", TRANSFER_MONEY);
-                flagUpdateCard = false;
+                flagUpdateCard = true;
                 break;
             case R.id.withdraw_money://снять
                 args.putInt("Select_action", WITHDRAW_MONEY);
@@ -125,11 +107,11 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
 
 
     public void getListHistoryCard(int idCard) {
-        dispos = historyDao.allHistoryCard(idCard)
+        disposListHistoryCard = historyDao.allHistoryCard(idCard)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listHistory -> {
-                    dispos.dispose();
+                    disposListHistoryCard.dispose();
                     //отображаем список
                     AdapterHistory adapter = new AdapterHistory(this, listHistory);
                     RecyclerView recyclerView = findViewById(R.id.idRecyclerHistory);
@@ -139,8 +121,9 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
 
 
     @Override
-    public void onGetDataFromDialog(String date, int total, int idCardNumberWherefrom, String cardNumberWhere) {
+    public void onGetDataFromDialog(String date, int total, int idCardNumberWherefrom, String cardNumberWhere, int selectedAction) {
         history = new History(date, total, idCardNumberWherefrom, cardNumberWhere);
+        this.selectedAction = selectedAction;
         idCard = idCardNumberWherefrom;
         insertHistory(history);
     }
@@ -156,9 +139,7 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
 
                     @Override
                     public void onComplete() {
-                        if (flagUpdateCard) {
-                            getCard(idCard);
-                        } else updateData();
+                        updateData();
                     }//onComplete
 
                     @Override
@@ -179,7 +160,9 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
 
                     @Override
                     public void onComplete() {
-                        updateData();
+                        if (card == tempCard) {
+                            updateData();
+                        }
                     }//onComplete
 
                     @Override
@@ -187,4 +170,67 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
                     }
                 });
     }
-}
+
+
+    private void getCard(int idCard) {
+        disposGetCardById = cardDao.getCardById(idCard)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(card -> {
+                    tempCard = card;
+                    disposGetCardById.dispose();
+                    TextView cardNumber = findViewById(R.id.idCardNumber);
+                    TextView totalAmount = findViewById(R.id.idTotalAmount);
+                    cardNumber.setText(card.getCardNumber());
+                    totalAmount.setText(String.valueOf(card.getTotalAmount()));
+
+                    switch (selectedAction) {
+                        case REPLENISH_CARD:
+                            if (flagUpdateCard) {
+                                tempCard.setTotalAmount(tempCard.getTotalAmount() + history.getAmount());
+                                updateCard(tempCard);
+                                flagUpdateCard = false;
+                            }
+                            break;
+                        case WITHDRAW_MONEY:
+                            if (flagUpdateCard) {
+                                tempCard.setTotalAmount(tempCard.getTotalAmount() - history.getAmount());
+                                updateCard(tempCard);
+                                flagUpdateCard = false;
+                            }
+                            break;
+                        case TRANSFER_MONEY:
+                            if (flagUpdateCard) {
+                                tempCard.setTotalAmount(tempCard.getTotalAmount() - history.getAmount());
+                                updateCard(tempCard);
+                                flagUpdateCard = false;
+
+                                //получаем все карты пользователя, находим в них numCard и добавляем к ней сумму, если нет numCard, то ничего не делаем
+                                getListCardsUser();
+                            }
+                            break;
+                    }
+                });
+    }//getCard
+
+
+    public void getListCardsUser() {
+        disposListCardsUser = cardDao.allCardsUser(tempCard.getIdUser())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listCards -> {
+                    disposListCardsUser.dispose();
+                    String numCard = history.getRecipientCard();
+                    for (int i = 0; i < listCards.size(); i++) {
+                        if (listCards.get(i).getCardNumber().equals(numCard)) {
+                            int totalAmount = listCards.get(i).getTotalAmount() + history.getAmount();
+                            listCards.get(i).setTotalAmount(totalAmount);
+                            updateCard(listCards.get(i));
+                            //сделать update истории карты получателя
+
+                        }
+                    }
+                });
+    }//getListCardsUser
+
+}//class HistoryActivity

@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
                 intent.putExtra("idCard", idCard);
                 startActivity(intent);
+                adapter= null;
             }
 
             @Override
