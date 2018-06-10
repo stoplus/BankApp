@@ -15,16 +15,16 @@ public class History {
     @ColumnInfo(name = "amount")
     private int amount;
 
-    @ColumnInfo(name = "beneficiaryCard")
-    private int beneficiaryCard;
+    @ColumnInfo(name = "recipientCard")
+    private String recipientCard;
 
     @ColumnInfo(name = "idSenderCard")
     private int idSenderCard;
 
-    public History(String date, int amount, int beneficiaryCard, int idSenderCard) {
+    public History(String date, int amount, int idSenderCard, String recipientCard) {
         this.date = date;
         this.amount = amount;
-        this.beneficiaryCard = beneficiaryCard;
+        this.recipientCard = recipientCard;
         this.idSenderCard = idSenderCard;
     }
 
@@ -52,12 +52,12 @@ public class History {
         this.amount = amount;
     }
 
-    public int getBeneficiaryCard() {
-        return beneficiaryCard;
+    public String getRecipientCard() {
+        return recipientCard;
     }
 
-    public void setBeneficiaryCard(int beneficiaryCard) {
-        this.beneficiaryCard = beneficiaryCard;
+    public void setRecipientCard(String recipientCard) {
+        this.recipientCard = recipientCard;
     }
 
     public int getIdSenderCard() {

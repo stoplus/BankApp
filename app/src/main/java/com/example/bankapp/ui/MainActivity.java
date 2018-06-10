@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     UserDao userDao;
     int idUser;
     private Disposable dispos;
+    private Disposable disposNubbersCard;
     private RecyclerView recyclerView;
     private View view;
     private LinearLayout bloc;
@@ -68,6 +69,12 @@ public class MainActivity extends AppCompatActivity {
         getListCardsUser(idUser);//получаем список карт
     }
 
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getListCardsUser(idUser);//получаем список карт
+    }
 
     private void setupWidget() {
         bloc = findViewById(R.id.idBloc);
@@ -96,8 +103,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(int position, View v) {
                 //открываем историю
+                int idCard = tempListCards.get(position).getId();
                 Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
-                intent.putExtra("idCard", tempListCards.get(position).getId());
+                intent.putExtra("idCard", idCard);
                 startActivity(intent);
             }
 
