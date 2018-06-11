@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean adapterFlag;
     private List<Card> tempListCards;
     private List<String> listAllNumbersCards;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +63,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(view);
 
         idUser = getIntent().getIntExtra("idUser", 0);
-
         recyclerView = findViewById(R.id.idRecycler);
 
         MyApp.app().dataBaseComponent().inject(this);
-
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        setTitle("Список карт");
         getListCardsUser(idUser);//получаем список карт
     }
 
@@ -107,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
                 intent.putExtra("idCard", idCard);
                 startActivity(intent);
-                adapter= null;
+                adapter = null;
             }
 
             @Override
@@ -147,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }//if
-
     }//setCards
 
 

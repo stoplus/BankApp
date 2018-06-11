@@ -3,6 +3,7 @@ package com.example.bankapp.ui;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,12 +55,17 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
     private TextView cardNumber;
     private TextView totalAmount;
     private CheckBox checkBox;
+    private Toolbar toolbar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        setTitle("История по карте");
 
         MyApp.app().dataBaseComponent().inject(this);
         idCard = getIntent().getIntExtra("idCard", 0);
