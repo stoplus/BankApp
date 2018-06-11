@@ -17,7 +17,7 @@ import com.example.bankapp.entityRoom.History;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdapterHistory  extends RecyclerView.Adapter<AdapterHistory.ViewHolder> {
+public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHolder> {
     private LayoutInflater inflater;
     private List<History> list;
     private Context context;
@@ -60,6 +60,7 @@ public class AdapterHistory  extends RecyclerView.Adapter<AdapterHistory.ViewHol
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         holder.date.setText(list.get(position).getDate());
         String total = String.valueOf(list.get(position).getAmount());
+        total = list.get(position).isReplenishment() ? total : "-" + total;
         holder.amount.setText(String.format("%s %s", total, context.getResources().getString(R.string.uah)));
     }//onBindViewHolder
 

@@ -22,7 +22,9 @@ import com.example.bankapp.entityRoom.History;
 import com.example.bankapp.entityRoom.HistoryDao;
 import com.example.bankapp.entityRoom.UserDao;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -49,7 +51,7 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
     public final static int WITHDRAW_MONEY = 2001;//Снять
     public final static int TRANSFER_MONEY = 2002;//перевод
     private boolean flagUpdateCard;
-//    private boolean flagUpdateRecipientCard;
+    //    private boolean flagUpdateRecipientCard;
     private History history;
     private int selectedAction;
 
@@ -121,8 +123,8 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
 
 
     @Override
-    public void onGetDataFromDialog(String date, int total, int idCardNumberWherefrom, String cardNumberWhere, int selectedAction) {
-        history = new History(date, total, idCardNumberWherefrom, cardNumberWhere);
+    public void onGetDataFromDialog(String date, int total, int idCardNumberWherefrom, String cardNumberWhere, int selectedAction, boolean replenishment) {
+        history = new History(date, total, idCardNumberWherefrom, cardNumberWhere, replenishment);
         this.selectedAction = selectedAction;
         idCard = idCardNumberWherefrom;
         insertHistory(history);
@@ -139,7 +141,9 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
 
                     @Override
                     public void onComplete() {
-                        updateData();
+                        if (idCard == history.getIdSenderCard()){
+                            updateData();
+                        }
                     }//onComplete
 
                     @Override
@@ -182,7 +186,7 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
                     TextView cardNumber = findViewById(R.id.idCardNumber);
                     TextView totalAmount = findViewById(R.id.idTotalAmount);
                     cardNumber.setText(card.getCardNumber());
-                    totalAmount.setText(String.valueOf(card.getTotalAmount()));
+                    totalAmount.setText(String.format("%s %s", card.getTotalAmount(), this.getResources().getString(R.string.uah)));
 
                     switch (selectedAction) {
                         case REPLENISH_CARD:
@@ -227,7 +231,10 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
                             listCards.get(i).setTotalAmount(totalAmount);
                             updateCard(listCards.get(i));
                             //сделать update истории карты получателя
-
+                            int id = listCards.get(i).getId();
+                            history.setIdSenderCard(id);
+                            history.setReplenishment(true);
+                            insertHistory(history);
                         }
                     }
                 });

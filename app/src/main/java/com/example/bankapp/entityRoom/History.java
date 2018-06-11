@@ -21,11 +21,16 @@ public class History {
     @ColumnInfo(name = "idSenderCard")
     private int idSenderCard;
 
-    public History(String date, int amount, int idSenderCard, String recipientCard) {
+    @ColumnInfo(name = "replenishment")
+    private boolean replenishment;
+
+    public History(String date, int amount, int idSenderCard, String recipientCard, boolean replenishment) {
         this.date = date;
         this.amount = amount;
         this.recipientCard = recipientCard;
         this.idSenderCard = idSenderCard;
+        this.replenishment = replenishment;
+
     }
 
     public int getId() {
@@ -66,5 +71,13 @@ public class History {
 
     public void setIdSenderCard(int idSenderCard) {
         this.idSenderCard = idSenderCard;
+    }
+
+    public boolean isReplenishment() {
+        return replenishment;
+    }
+
+    public void setReplenishment(boolean replenishment) {
+        this.replenishment = replenishment;
     }
 }

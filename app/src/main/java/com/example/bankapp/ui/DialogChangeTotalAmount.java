@@ -156,7 +156,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
             datable.onGetDataFromDialog(date,
                     enterAmountSum,
                     selectedCartSender.getId(),
-                    numCardRecipient, REPLENISH_CARD);
+                    numCardRecipient, REPLENISH_CARD, true);
             dialogTemp.dismiss();
         } else
             Snackbar.make(view, "Введите сумму!", Snackbar.LENGTH_SHORT).show();
@@ -173,12 +173,12 @@ public class DialogChangeTotalAmount extends DialogFragment {
             int enterAmountSum = Integer.parseInt(amount);
             String numCardRecipient = spinnerWherefrom.getSelectedItem().toString();
 
-            if (selectedCartSender.getTotalAmount() > enterAmountSum) {
+            if (selectedCartSender.getTotalAmount() >= enterAmountSum) {
                 //отправляем данные в активность с историей
                 datable.onGetDataFromDialog(date,
                         enterAmountSum,
                         selectedCartSender.getId(),
-                        numCardRecipient, WITHDRAW_MONEY);
+                        numCardRecipient, WITHDRAW_MONEY, false);
                 dialogTemp.dismiss();
             } else Snackbar.make(view, "Недостаточно средств!", Snackbar.LENGTH_SHORT).show();
         } else Snackbar.make(view, "Введите сумму!", Snackbar.LENGTH_SHORT).show();
@@ -197,12 +197,12 @@ public class DialogChangeTotalAmount extends DialogFragment {
                 int enterAmountSum = Integer.parseInt(amount);
                 String numCardRecipient = spinnerWhere.getSelectedItem().toString();
 
-                if (selectedCartSender.getTotalAmount() > enterAmountSum) {
+                if (selectedCartSender.getTotalAmount() >= enterAmountSum) {
                     //отправляем данные в активность с историей
                     datable.onGetDataFromDialog(date,
                             enterAmountSum,
                             selectedCartSender.getId(),
-                            numCardRecipient, TRANSFER_MONEY);
+                            numCardRecipient, TRANSFER_MONEY, false);
                     dialogTemp.dismiss();
                 } else Snackbar.make(view, "Недостаточно средств!", Snackbar.LENGTH_SHORT).show();
             } else Snackbar.make(view, "Введите сумму!", Snackbar.LENGTH_SHORT).show();
