@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -54,6 +55,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
     private DialogInterface dialogTemp;
     private Card selectedCartSender;
     private EditText enterAmount;
+    private TextView pinCode;
 
     @Override // Метод onAttach() вызывается в начале жизненного цикла фрагмента
     public void onAttach(Context context) {
@@ -72,6 +74,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
 
         TextView cardWherefrom = view.findViewById(R.id.textViewWherefrom);
         TextView cardWhere = view.findViewById(R.id.textViewWhere);
+        pinCode = view.findViewById(R.id.idEnterPin);
         editTextCardRecipient = view.findViewById(R.id.idCardRecipient);
         enterAmount = view.findViewById(R.id.idEnterAmount);
         spinnerWherefrom = view.findViewById(R.id.spinnerWherefrom);
@@ -79,20 +82,24 @@ public class DialogChangeTotalAmount extends DialogFragment {
 
         idUser = Objects.requireNonNull(getArguments()).getInt("idUser");
         String title = "";
+        int image = 0;
         switch (Objects.requireNonNull(getArguments()).getInt("Select_action")) {
             case REPLENISH_CARD:
+                image = R.mipmap.put_money;
                 title = "Пополнить карту";
                 cardWherefrom.setVisibility(View.GONE);
                 cardWhere.setVisibility(View.GONE);
                 spinnerWhere.setVisibility(View.GONE);
                 break;
             case WITHDRAW_MONEY:
+                image = R.mipmap.get_money;
                 title = "Снять деньги";
                 cardWherefrom.setVisibility(View.GONE);
                 cardWhere.setVisibility(View.GONE);
                 spinnerWhere.setVisibility(View.GONE);
                 break;
             case TRANSFER_MONEY:
+                image = R.mipmap.transfer;
                 title = "Перевод между картами";
                 break;
         }//switch
@@ -100,7 +107,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
         getCardsUser();//получаем список карт пользователя
 
         builder.setTitle(title)
-//                .setIcon(R.drawable.hplib_img_btn_playlist)
+                .setIcon(image)
                 .setView(view);//показываем созданный вид
 
         AlertDialog dialog = builder.create();
@@ -131,31 +138,35 @@ public class DialogChangeTotalAmount extends DialogFragment {
     } // onCreateDialog
 
 
-    private void selectAction(View view){
+    private void selectAction(View view) {
         String amount = enterAmount.getText().toString();
+        String pin = pinCode.getText().toString();
         if (!amount.isEmpty()) {
-            int enterAmountSum = Integer.parseInt(amount);
-            Date dateNow = new Date();
-            SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd.MM.yyyy hh:mm");
-            String date = formatForDateNow.format(dateNow);
+            if (!pin.isEmpty()) {
+                if (pin.equals(selectedCartSender.getPinCode())) {
+                    int enterAmountSum = Integer.parseInt(amount);
+                    Date dateNow = new Date();
+                    SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+                    String date = formatForDateNow.format(dateNow);
 
-            String numCard = ((AdapterSpinner) spinnerWherefrom.getAdapter())
-                    .list.get(spinnerWherefrom.getSelectedItemPosition()).getCardNumber();
+                    String numCard = ((AdapterSpinner) spinnerWherefrom.getAdapter())
+                            .list.get(spinnerWherefrom.getSelectedItemPosition()).getCardNumber();
 
-            switch (Objects.requireNonNull(getArguments()).getInt("Select_action")) {
-                case REPLENISH_CARD://Пополнить карту
-                    replenish(view, date, numCard, enterAmountSum);
-                    break;
-                case WITHDRAW_MONEY://Снять деньги
-                    withdraw(view, date, numCard, enterAmountSum);
-                    break;
-                case TRANSFER_MONEY://Перевод между картами
-                    transfer(view, date, numCard, enterAmountSum);
-                    break;
-            }
-        } else
-            Snackbar.make(view, "Введите сумму!", Snackbar.LENGTH_SHORT).show();
-    }
+                    switch (Objects.requireNonNull(getArguments()).getInt("Select_action")) {
+                        case REPLENISH_CARD://Пополнить карту
+                            replenish(view, date, numCard, enterAmountSum);
+                            break;
+                        case WITHDRAW_MONEY://Снять деньги
+                            withdraw(view, date, numCard, enterAmountSum);
+                            break;
+                        case TRANSFER_MONEY://Перевод между картами
+                            transfer(view, date, numCard, enterAmountSum);
+                            break;
+                    }
+                }else Snackbar.make(view, "Неправильный PIN-код!", Snackbar.LENGTH_SHORT).show();
+            }else Snackbar.make(view, "Введите PIN-код!", Snackbar.LENGTH_SHORT).show();
+        } else Snackbar.make(view, "Введите сумму!", Snackbar.LENGTH_SHORT).show();
+    }//selectAction
 
 
     private void replenish(View view, String date, String numCard, int enterAmountSum) {

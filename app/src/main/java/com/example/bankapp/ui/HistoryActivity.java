@@ -3,8 +3,13 @@ package com.example.bankapp.ui;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.bankapp.ForDialog;
@@ -42,10 +47,13 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
     public final static int REPLENISH_CARD = 2000;//пополнить
     public final static int WITHDRAW_MONEY = 2001;//Снять
     public final static int TRANSFER_MONEY = 2002;//перевод
-    private boolean flagUpdateCard;
-    //    private boolean flagUpdateRecipientCard;
+    public boolean flagUpdateCard;
     private History history;
     private int selectedAction;
+    private TextView pinCode;
+    private TextView cardNumber;
+    private TextView totalAmount;
+    private CheckBox checkBox;
 
 
     @Override
@@ -56,13 +64,13 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
         MyApp.app().dataBaseComponent().inject(this);
         idCard = getIntent().getIntExtra("idCard", 0);
         updateData();
-    }
+    }//onCreate
 
 
     private void updateData() {
         getListHistoryCard(idCard);//получаем историю этой карты
         getCard(idCard);//заполняем поля номер кары и сумма на карте
-    }
+    }//updateData
 
 
     @Override
@@ -81,15 +89,12 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
         switch (id) {
             case R.id.send_money://перевести
                 args.putInt("Select_action", TRANSFER_MONEY);
-                flagUpdateCard = true;
                 break;
             case R.id.withdraw_money://снять
                 args.putInt("Select_action", WITHDRAW_MONEY);
-                flagUpdateCard = true;
                 break;
             case R.id.replenish_account://пополнить
                 args.putInt("Select_action", REPLENISH_CARD);
-                flagUpdateCard = true;
                 break;
         }//switch
 
@@ -106,21 +111,33 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listHistory -> {
                     disposListHistoryCard.dispose();
-                    //отображаем список
-                    AdapterHistory adapter = new AdapterHistory(this, listHistory);
-                    RecyclerView recyclerView = findViewById(R.id.idRecyclerHistory);
-                    recyclerView.setAdapter(adapter);
+                    setListHistory(listHistory);//отображаем список
                 });
     }//getListCardsUser
+
+    private void setListHistory(List<History> listHistory) {
+        RecyclerView recyclerView = findViewById(R.id.idRecyclerHistory);
+        TextView textHistory = findViewById(R.id.textHistory);
+        if (listHistory.size() == 0) {
+            recyclerView.setVisibility(View.GONE);
+            textHistory.setVisibility(View.VISIBLE);
+        } else {
+            textHistory.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            AdapterHistory adapter = new AdapterHistory(this, listHistory);
+            recyclerView.setAdapter(adapter);
+        }
+    }//setListHistory
 
 
     @Override
     public void onGetDataFromDialog(String date, int total, int idCardNumberWherefrom, String cardNumberWhere, int selectedAction, boolean replenishment) {
+        flagUpdateCard = true;
         history = new History(date, total, idCardNumberWherefrom, cardNumberWhere, replenishment);
         this.selectedAction = selectedAction;
         idCard = idCardNumberWherefrom;
         insertHistory(history);
-    }
+    }//onGetDataFromDialog
 
     private void insertHistory(History history) {
         Completable.fromAction(() -> historyDao.insert(history))
@@ -140,7 +157,7 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
                     public void onError(Throwable e) {
                     }
                 });
-    }
+    }//insertHistory
 
 
     private void updateCard(Card card) {
@@ -161,7 +178,7 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
                     public void onError(Throwable e) {
                     }
                 });
-    }
+    }//updateCard
 
 
     private void getCard(int idCard) {
@@ -176,31 +193,50 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
     }//getCard
 
 
-    private void selectAction(){
-        TextView cardNumber = findViewById(R.id.idCardNumber);
-        TextView totalAmount = findViewById(R.id.idTotalAmount);
+    private void selectAction() {
+        if (cardNumber == null) {
+            cardNumber = findViewById(R.id.idCardNumber);
+            totalAmount = findViewById(R.id.idTotalAmount);
+            pinCode = findViewById(R.id.idPinCode);
+            checkBox = findViewById(R.id.idCheckBoxPinCode);
+        }
+
+        pinCode.setText(tempCard.getPinCode());
+        checkBox.setOnCheckedChangeListener(listner);//устанавливаем слушатель на чекбокс видимости пароля
         cardNumber.setText(tempCard.getCardNumber());
         totalAmount.setText(String.format("%s %s", tempCard.getTotalAmount(), this.getResources().getString(R.string.uah)));
 
         if (flagUpdateCard) {
             switch (selectedAction) {
                 case REPLENISH_CARD:
-                        tempCard.setTotalAmount(tempCard.getTotalAmount() + history.getAmount());
-                        updateCard(tempCard);
+                    tempCard.setTotalAmount(tempCard.getTotalAmount() + history.getAmount());
+                    updateCard(tempCard);
                     break;
                 case WITHDRAW_MONEY:
-                        tempCard.setTotalAmount(tempCard.getTotalAmount() - history.getAmount());
-                        updateCard(tempCard);
+                    tempCard.setTotalAmount(tempCard.getTotalAmount() - history.getAmount());
+                    updateCard(tempCard);
                     break;
                 case TRANSFER_MONEY:
-                        tempCard.setTotalAmount(tempCard.getTotalAmount() - history.getAmount());
-                        updateCard(tempCard);
-                        getListCardsUser();
+                    tempCard.setTotalAmount(tempCard.getTotalAmount() - history.getAmount());
+                    updateCard(tempCard);
+                    getListCardsUser();
                     break;
             }//switch
             flagUpdateCard = false;
         }//if
     }//selectAction
+
+
+    private CompoundButton.OnCheckedChangeListener listner = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked) {
+                pinCode.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);//скрываем пароль
+            } else {
+                pinCode.setInputType(129);//показываем пароль
+            }//if
+        }//onCheckedChanged
+    };
 
 
     public void getListCardsUser() {
@@ -214,7 +250,7 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
     }//getListCardsUser
 
 
-    private void updateRecipientCard(List<Card>listCards){
+    private void updateRecipientCard(List<Card> listCards) {
         String numCard = history.getRecipientCard();
         for (int i = 0; i < listCards.size(); i++) {
             if (listCards.get(i).getCardNumber().equals(numCard)) {
@@ -226,8 +262,8 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
                 history.setIdSenderCard(id);
                 history.setReplenishment(true);
                 insertHistory(history);
-            }
-        }
-    }
+            }//if
+        }//for
+    }//updateRecipientCard
 
 }//class HistoryActivity

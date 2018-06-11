@@ -84,6 +84,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/idLayoutSpinner" />
 
+    <EditText
+        android:id="@+id/idEnterPin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="PIN-код"
+        android:inputType="number"
+        android:maxLength="4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/idEnterAmount" />
+
     <Button
         android:id="@+id/buttonCancel"
         android:layout_width="wrap_content"
@@ -92,7 +107,7 @@
         android:text="Отмена"
         app:layout_constraintEnd_toStartOf="@+id/buttonOk"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/idEnterAmount" />
+        app:layout_constraintTop_toBottomOf="@+id/idEnterPin" />
 
     <Button
         android:id="@+id/buttonOk"
@@ -102,7 +117,7 @@
         android:text="Ок"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/buttonCancel"
-        app:layout_constraintTop_toBottomOf="@+id/idEnterAmount" />
+        app:layout_constraintTop_toBottomOf="@+id/idEnterPin" />
 
 
 </android.support.constraint.ConstraintLayout>
