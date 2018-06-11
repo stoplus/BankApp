@@ -30,5 +30,10 @@
     <string name="withdraw_money">Снять</string>
     <string name="replenish_account">Пополнить</string>
 
+    <string name="list_cards">Список карт</string>
+    <string name="history_card">История по карте</string>
+
+
+
 
 </resources>

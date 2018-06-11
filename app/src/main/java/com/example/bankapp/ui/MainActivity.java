@@ -1,5 +1,6 @@
 package com.example.bankapp.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     UserDao userDao;
     int idUser;
-    private Disposable dispos;
+    private Disposable disposListCardsUser;
     private Disposable disposNubbersCard;
     private RecyclerView recyclerView;
     private View view;
@@ -54,8 +55,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean adapterFlag;
     private List<Card> tempListCards;
     private List<String> listAllNumbersCards;
-    private Toolbar toolbar;
+    private final int MAX_RANDOM = 10000;
 
+    @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,18 +68,19 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.idRecycler);
 
         MyApp.app().dataBaseComponent().inject(this);
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setTitle("Список карт");
+        setTitle(getResources().getString(R.string.list_cards));
         getListCardsUser(idUser);//получаем список карт
-    }
+    }//onCreate
 
 
     @Override
     protected void onRestart() {
         super.onRestart();
         getListCardsUser(idUser);//получаем список карт
-    }
+    }//onRestart
+
 
     private void setupWidget() {
         bloc = findViewById(R.id.idBloc);
@@ -93,45 +96,13 @@ public class MainActivity extends AppCompatActivity {
                     createNewCard(); //регистрируем новую карту
                 }
             });
-        } else {
-            setCards();
-        }
-    }
+        } else showCards();
+    }//setupWidget
 
-    private void setCards() {
+
+    private void showCards() {
         bloc.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
-
-        OnItemListener onItemListener = new OnItemListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-                //открываем историю
-                int idCard = tempListCards.get(position).getId();
-                Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
-                intent.putExtra("idCard", idCard);
-                startActivity(intent);
-                adapter = null;
-            }
-
-            @Override
-            public void onItemLongClick(int position, View v) {
-                positionDelete = position;
-                PopupMenu popup = new PopupMenu(v.getContext(), v, Gravity.CENTER);
-                popup.inflate(R.menu.context_menu_card);
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.deleteCard:
-                                deleteCard(tempListCards.get(position));
-                                return true;
-                        }//switch
-                        return false;
-                    }//onMenuItemClick
-                });
-                popup.show();
-            }
-        };
 
         if (adapter == null) {
             adapter = new AdapterCard(this, tempListCards, onItemListener);
@@ -147,10 +118,42 @@ public class MainActivity extends AppCompatActivity {
                 if (adapterFlag) {
                     adapter = new AdapterCard(this, tempListCards, onItemListener);
                     recyclerView.setAdapter(adapter);
-                }
-            }
+                }//if
+            }//if
         }//if
     }//setCards
+
+
+    private OnItemListener onItemListener = new OnItemListener() {
+        @Override
+        public void onItemClick(int position, View v) {
+            //открываем историю
+            int idCard = tempListCards.get(position).getId();
+            Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+            intent.putExtra("idCard", idCard);
+            startActivity(intent);
+            adapter = null;
+        }//onItemClick
+
+        @Override
+        public void onItemLongClick(int position, View v) {
+            positionDelete = position;
+            PopupMenu popup = new PopupMenu(v.getContext(), v, Gravity.CENTER);
+            popup.inflate(R.menu.context_menu_card);
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.deleteCard:
+                            deleteCard(tempListCards.get(position));
+                            return true;
+                    }//switch
+                    return false;
+                }//onMenuItemClick
+            });
+            popup.show();
+        }//onItemLongClick
+    };
 
 
     @Override
@@ -200,21 +203,21 @@ public class MainActivity extends AppCompatActivity {
                 .append(" ").append(getRandom())
                 .append(" ").append(getRandom());
         return builder.toString();
-    }
+    }//generateNumberCard
 
 
     private String getRandom() {
         Random rand = new Random();
-        return String.format(Locale.US, "%04d", rand.nextInt(10000));
+        return String.format(Locale.US, "%04d", rand.nextInt(MAX_RANDOM));
     }// getRandom
 
 
     public void getListCardsUser(int idUser) {
-        dispos = cardDao.allCardsUser(idUser)
+        disposListCardsUser = cardDao.allCardsUser(idUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listCards -> {
-                    dispos.dispose();
+                    disposListCardsUser.dispose();
                     tempListCards = listCards;
                     setupWidget();
                 });
@@ -222,11 +225,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void getListAllNumbersCards() {
-        dispos = cardDao.allNumbersCards()
+        disposNubbersCard = cardDao.allNumbersCards()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listNumbersCards -> {
-                    dispos.dispose();
+                    disposNubbersCard.dispose();
                     listAllNumbersCards = listNumbersCards;
                     createNumberCard();
                 });
@@ -277,5 +280,5 @@ public class MainActivity extends AppCompatActivity {
                     public void onError(Throwable e) {
                     }
                 });
-    }
-}
+    }//deleteCard
+}//class MainActivity

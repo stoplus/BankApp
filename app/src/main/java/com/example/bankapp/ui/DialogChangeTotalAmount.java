@@ -25,11 +25,13 @@ import com.example.bankapp.ForDialog;
 import com.example.bankapp.adapters.AdapterSpinner;
 import com.example.bankapp.entityRoom.Card;
 import com.example.bankapp.entityRoom.CardDao;
+import com.example.bankapp.entityRoom.History;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -145,63 +147,60 @@ public class DialogChangeTotalAmount extends DialogFragment {
             if (!pin.isEmpty()) {
                 if (pin.equals(selectedCartSender.getPinCode())) {
                     int enterAmountSum = Integer.parseInt(amount);
+
                     Date dateNow = new Date();
-                    SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+                    SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.US);
                     String date = formatForDateNow.format(dateNow);
 
                     String numCard = ((AdapterSpinner) spinnerWherefrom.getAdapter())
                             .list.get(spinnerWherefrom.getSelectedItemPosition()).getCardNumber();
 
+                    History history = new History(date, enterAmountSum, selectedCartSender.getId(),
+                            numCard, false);
+
                     switch (Objects.requireNonNull(getArguments()).getInt("Select_action")) {
                         case REPLENISH_CARD://Пополнить карту
-                            replenish(view, date, numCard, enterAmountSum);
+                            replenish(view, history);
                             break;
                         case WITHDRAW_MONEY://Снять деньги
-                            withdraw(view, date, numCard, enterAmountSum);
+                            withdraw(view, history);
                             break;
                         case TRANSFER_MONEY://Перевод между картами
-                            transfer(view, date, numCard, enterAmountSum);
+                            transfer(view, history);
                             break;
                     }
-                }else Snackbar.make(view, "Неправильный PIN-код!", Snackbar.LENGTH_SHORT).show();
-            }else Snackbar.make(view, "Введите PIN-код!", Snackbar.LENGTH_SHORT).show();
+                } else Snackbar.make(view, "Неправильный PIN-код!", Snackbar.LENGTH_SHORT).show();
+            } else Snackbar.make(view, "Введите PIN-код!", Snackbar.LENGTH_SHORT).show();
         } else Snackbar.make(view, "Введите сумму!", Snackbar.LENGTH_SHORT).show();
     }//selectAction
 
 
-    private void replenish(View view, String date, String numCard, int enterAmountSum) {
+    private void replenish(View view, History history) {
         //отправляем данные в активность с историей
-        datable.onGetDataFromDialog(date,
-                enterAmountSum,
-                selectedCartSender.getId(),
-                numCard, REPLENISH_CARD, true);
+        history.setReplenishment(true);
+        datable.onGetDataFromDialog(REPLENISH_CARD, history);
         dialogTemp.dismiss();
     }//replenish
 
 
-    private void withdraw(View view, String date, String numCard, int enterAmountSum) {
-        if (selectedCartSender.getTotalAmount() >= enterAmountSum) {
+    private void withdraw(View view, History history) {
+        if (selectedCartSender.getTotalAmount() >= history.getAmount()) {
             //отправляем данные в активность с историей
-            datable.onGetDataFromDialog(date,
-                    enterAmountSum,
-                    selectedCartSender.getId(),
-                    numCard, WITHDRAW_MONEY, false);
+            datable.onGetDataFromDialog(WITHDRAW_MONEY, history);
             dialogTemp.dismiss();
         } else Snackbar.make(view, "Недостаточно средств!", Snackbar.LENGTH_SHORT).show();
     }//replenish
 
 
-    private void transfer(View view, String date, String numCardSender, int enterAmountSum) {
+    private void transfer(View view, History history) {
         String numCardRecipient = ((AdapterSpinner) spinnerWhere.getAdapter())
                 .list.get(spinnerWhere.getSelectedItemPosition()).getCardNumber();
 
-        if (!numCardRecipient.equals(numCardSender)) {
-            if (selectedCartSender.getTotalAmount() >= enterAmountSum) {
+        if (!numCardRecipient.equals(history.getRecipientCard())) {
+            if (selectedCartSender.getTotalAmount() >= history.getAmount()) {
                 //отправляем данные в активность с историей
-                datable.onGetDataFromDialog(date,
-                        enterAmountSum,
-                        selectedCartSender.getId(),
-                        numCardRecipient, TRANSFER_MONEY, false);
+                history.setRecipientCard(numCardRecipient);
+                datable.onGetDataFromDialog(TRANSFER_MONEY, history);
                 dialogTemp.dismiss();
             } else Snackbar.make(view, "Недостаточно средств!", Snackbar.LENGTH_SHORT).show();
         } else Snackbar.make(view, "Вы не можите указывать одну и туже карту!",

@@ -2,6 +2,7 @@ package com.example.bankapp.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,8 +37,6 @@ import io.reactivex.schedulers.Schedulers;
 public class LoginActivity extends AppCompatActivity {
     @Inject
     UserDao userDao;
-
-    // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -48,15 +47,15 @@ public class LoginActivity extends AppCompatActivity {
     private Button mRegisterButton;
     private boolean flagSinIn;
     private View view;
-    private Disposable dispos;
+    private Disposable disposListUsers;
 
+    @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         view = getLayoutInflater().inflate(R.layout.activity_login, null);
         setContentView(view);
 
-        // Set up the login form.
         mEmailView = findViewById(R.id.email);
         mPasswordView = findViewById(R.id.password);
         mRegisterButton = findViewById(R.id.email_register_button);
@@ -126,8 +125,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
+            // There was an error; don't attempt login and focus the first form field with an error.
             focusView.requestFocus();
         } else {
             showProgress(true);
@@ -139,11 +137,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void getListUsers(String email, String password) {
-        dispos = userDao.allUsers()
+        disposListUsers = userDao.allUsers()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listUsers -> {
-                    dispos.dispose();
+                    disposListUsers.dispose();
                     getResultSingIn(email, password, listUsers);
                 });
     }//getListImageObj

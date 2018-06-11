@@ -55,7 +55,6 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
     private TextView cardNumber;
     private TextView totalAmount;
     private CheckBox checkBox;
-    private Toolbar toolbar;
 
 
     @Override
@@ -63,9 +62,9 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setTitle("История по карте");
+        setTitle(getResources().getString(R.string.history_card));
 
         MyApp.app().dataBaseComponent().inject(this);
         idCard = getIntent().getIntExtra("idCard", 0);
@@ -137,13 +136,14 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
 
 
     @Override
-    public void onGetDataFromDialog(String date, int total, int idCardNumberWherefrom, String cardNumberWhere, int selectedAction, boolean replenishment) {
+    public void onGetDataFromDialog(int selectedAction, History history) {
         flagUpdateCard = true;
-        history = new History(date, total, idCardNumberWherefrom, cardNumberWhere, replenishment);
+        this.history = history;
         this.selectedAction = selectedAction;
-        idCard = idCardNumberWherefrom;
+        idCard = history.getIdSenderCard();
         insertHistory(history);
     }//onGetDataFromDialog
+
 
     private void insertHistory(History history) {
         Completable.fromAction(() -> historyDao.insert(history))
@@ -271,5 +271,4 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
             }//if
         }//for
     }//updateRecipientCard
-
 }//class HistoryActivity

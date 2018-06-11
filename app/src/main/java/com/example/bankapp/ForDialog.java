@@ -1,7 +1,7 @@
 package com.example.bankapp;
 
-import android.view.View;
+import com.example.bankapp.entityRoom.History;
 
 public interface ForDialog {
-    void onGetDataFromDialog(String date, int total, int idCardWherefrom, String cardNumberWhere, int selectedAction, boolean replenishment);
+    void onGetDataFromDialog(int selectedAction, History history);
 }
