@@ -1,19 +1,14 @@
 package com.example.bankapp.ui;
 
-import android.os.Parcelable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import com.example.bankapp.ForDialog;
 import com.example.bankapp.MyApp;
-import com.example.bankapp.OnItemListener;
 import com.example.bankapp.R;
 import com.example.bankapp.adapters.AdapterHistory;
 import com.example.bankapp.entityRoom.Card;
@@ -22,9 +17,6 @@ import com.example.bankapp.entityRoom.History;
 import com.example.bankapp.entityRoom.HistoryDao;
 import com.example.bankapp.entityRoom.UserDao;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -141,9 +133,7 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
 
                     @Override
                     public void onComplete() {
-                        if (idCard == history.getIdSenderCard()){
-                            updateData();
-                        }
+                        if (idCard == history.getIdSenderCard()) updateData();
                     }//onComplete
 
                     @Override
@@ -164,9 +154,7 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
 
                     @Override
                     public void onComplete() {
-                        if (card == tempCard) {
-                            updateData();
-                        }
+                        if (card == tempCard) updateData();
                     }//onComplete
 
                     @Override
@@ -183,39 +171,36 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
                 .subscribe(card -> {
                     tempCard = card;
                     disposGetCardById.dispose();
-                    TextView cardNumber = findViewById(R.id.idCardNumber);
-                    TextView totalAmount = findViewById(R.id.idTotalAmount);
-                    cardNumber.setText(card.getCardNumber());
-                    totalAmount.setText(String.format("%s %s", card.getTotalAmount(), this.getResources().getString(R.string.uah)));
-
-                    switch (selectedAction) {
-                        case REPLENISH_CARD:
-                            if (flagUpdateCard) {
-                                tempCard.setTotalAmount(tempCard.getTotalAmount() + history.getAmount());
-                                updateCard(tempCard);
-                                flagUpdateCard = false;
-                            }
-                            break;
-                        case WITHDRAW_MONEY:
-                            if (flagUpdateCard) {
-                                tempCard.setTotalAmount(tempCard.getTotalAmount() - history.getAmount());
-                                updateCard(tempCard);
-                                flagUpdateCard = false;
-                            }
-                            break;
-                        case TRANSFER_MONEY:
-                            if (flagUpdateCard) {
-                                tempCard.setTotalAmount(tempCard.getTotalAmount() - history.getAmount());
-                                updateCard(tempCard);
-                                flagUpdateCard = false;
-
-                                //получаем все карты пользователя, находим в них numCard и добавляем к ней сумму, если нет numCard, то ничего не делаем
-                                getListCardsUser();
-                            }
-                            break;
-                    }
+                    selectAction();
                 });
     }//getCard
+
+
+    private void selectAction(){
+        TextView cardNumber = findViewById(R.id.idCardNumber);
+        TextView totalAmount = findViewById(R.id.idTotalAmount);
+        cardNumber.setText(tempCard.getCardNumber());
+        totalAmount.setText(String.format("%s %s", tempCard.getTotalAmount(), this.getResources().getString(R.string.uah)));
+
+        if (flagUpdateCard) {
+            switch (selectedAction) {
+                case REPLENISH_CARD:
+                        tempCard.setTotalAmount(tempCard.getTotalAmount() + history.getAmount());
+                        updateCard(tempCard);
+                    break;
+                case WITHDRAW_MONEY:
+                        tempCard.setTotalAmount(tempCard.getTotalAmount() - history.getAmount());
+                        updateCard(tempCard);
+                    break;
+                case TRANSFER_MONEY:
+                        tempCard.setTotalAmount(tempCard.getTotalAmount() - history.getAmount());
+                        updateCard(tempCard);
+                        getListCardsUser();
+                    break;
+            }//switch
+            flagUpdateCard = false;
+        }//if
+    }//selectAction
 
 
     public void getListCardsUser() {
@@ -224,20 +209,25 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listCards -> {
                     disposListCardsUser.dispose();
-                    String numCard = history.getRecipientCard();
-                    for (int i = 0; i < listCards.size(); i++) {
-                        if (listCards.get(i).getCardNumber().equals(numCard)) {
-                            int totalAmount = listCards.get(i).getTotalAmount() + history.getAmount();
-                            listCards.get(i).setTotalAmount(totalAmount);
-                            updateCard(listCards.get(i));
-                            //сделать update истории карты получателя
-                            int id = listCards.get(i).getId();
-                            history.setIdSenderCard(id);
-                            history.setReplenishment(true);
-                            insertHistory(history);
-                        }
-                    }
+                    updateRecipientCard(listCards);
                 });
     }//getListCardsUser
+
+
+    private void updateRecipientCard(List<Card>listCards){
+        String numCard = history.getRecipientCard();
+        for (int i = 0; i < listCards.size(); i++) {
+            if (listCards.get(i).getCardNumber().equals(numCard)) {
+                int totalAmount = listCards.get(i).getTotalAmount() + history.getAmount();
+                listCards.get(i).setTotalAmount(totalAmount);
+                updateCard(listCards.get(i));
+                //сделать update истории карты получателя
+                int id = listCards.get(i).getId();
+                history.setIdSenderCard(id);
+                history.setReplenishment(true);
+                insertHistory(history);
+            }
+        }
+    }
 
 }//class HistoryActivity

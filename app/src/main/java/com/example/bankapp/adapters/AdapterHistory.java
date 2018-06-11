@@ -63,10 +63,4 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHold
         total = list.get(position).isReplenishment() ? total : "-" + total;
         holder.amount.setText(String.format("%s %s", total, context.getResources().getString(R.string.uah)));
     }//onBindViewHolder
-
-    public void deleteCardAdapter(int pos) {
-        list.remove(pos);
-        notifyItemRemoved(pos);//updates after removing Item at position
-        notifyItemRangeChanged(pos, list.size());//updates the items of the following items
-    }//deleteFromListAdapter
 }//class Adapter

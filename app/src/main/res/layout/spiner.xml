@@ -1,13 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/admin_spiner"
-    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_weight="1"
-    android:text="TextView"
-    android:textStyle="bold"
-    android:fontFamily="sans-serif"
-    android:textSize="19sp"
-    android:paddingLeft="5dp"/>
+    android:layout_width="match_parent"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/idCardSpiner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="TextView"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif"
+        android:textSize="19sp"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp"/>
+
+
+    <TextView
+        android:id="@+id/idAmountSpiner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="TextView"
+        android:gravity="end"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif"
+        android:textSize="19sp"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp"/>
+</LinearLayout>
+
+

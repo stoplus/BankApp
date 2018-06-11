@@ -15,11 +15,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.example.bankapp.MyApp;
 import com.example.bankapp.R;
 import com.example.bankapp.ForDialog;
+import com.example.bankapp.adapters.AdapterSpinner;
 import com.example.bankapp.entityRoom.Card;
 import com.example.bankapp.entityRoom.CardDao;
 
@@ -95,7 +97,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
                 break;
         }//switch
 
-        getNumbersCard();//получаем список карт пользователя
+        getCardsUser();//получаем список карт пользователя
 
         builder.setTitle(title)
 //                .setIcon(R.drawable.hplib_img_btn_playlist)
@@ -112,20 +114,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
                 buttonOk.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        switch (Objects.requireNonNull(getArguments()).getInt("Select_action")) {
-                            case REPLENISH_CARD:
-//                                title = "Пополнить карту";
-                                replenish(view);
-                                break;
-                            case WITHDRAW_MONEY:
-//                                title = "Снять деньги";
-                                withdraw(view);
-                                break;
-                            case TRANSFER_MONEY:
-//                                title = "Перевод между картами";
-                                transfer(view);
-                                break;
-                        }
+                        selectAction(v);
                     }
                 });
 
@@ -142,70 +131,68 @@ public class DialogChangeTotalAmount extends DialogFragment {
     } // onCreateDialog
 
 
-    private void replenish(View view) {
+    private void selectAction(View view){
         String amount = enterAmount.getText().toString();
         if (!amount.isEmpty()) {
+            int enterAmountSum = Integer.parseInt(amount);
             Date dateNow = new Date();
             SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd.MM.yyyy hh:mm");
             String date = formatForDateNow.format(dateNow);
 
-            int enterAmountSum = Integer.parseInt(amount);
-            String numCardRecipient = spinnerWherefrom.getSelectedItem().toString();
+            String numCard = ((AdapterSpinner) spinnerWherefrom.getAdapter())
+                    .list.get(spinnerWherefrom.getSelectedItemPosition()).getCardNumber();
 
+            switch (Objects.requireNonNull(getArguments()).getInt("Select_action")) {
+                case REPLENISH_CARD://Пополнить карту
+                    replenish(view, date, numCard, enterAmountSum);
+                    break;
+                case WITHDRAW_MONEY://Снять деньги
+                    withdraw(view, date, numCard, enterAmountSum);
+                    break;
+                case TRANSFER_MONEY://Перевод между картами
+                    transfer(view, date, numCard, enterAmountSum);
+                    break;
+            }
+        } else
+            Snackbar.make(view, "Введите сумму!", Snackbar.LENGTH_SHORT).show();
+    }
+
+
+    private void replenish(View view, String date, String numCard, int enterAmountSum) {
+        //отправляем данные в активность с историей
+        datable.onGetDataFromDialog(date,
+                enterAmountSum,
+                selectedCartSender.getId(),
+                numCard, REPLENISH_CARD, true);
+        dialogTemp.dismiss();
+    }//replenish
+
+
+    private void withdraw(View view, String date, String numCard, int enterAmountSum) {
+        if (selectedCartSender.getTotalAmount() >= enterAmountSum) {
             //отправляем данные в активность с историей
             datable.onGetDataFromDialog(date,
                     enterAmountSum,
                     selectedCartSender.getId(),
-                    numCardRecipient, REPLENISH_CARD, true);
+                    numCard, WITHDRAW_MONEY, false);
             dialogTemp.dismiss();
-        } else
-            Snackbar.make(view, "Введите сумму!", Snackbar.LENGTH_SHORT).show();
+        } else Snackbar.make(view, "Недостаточно средств!", Snackbar.LENGTH_SHORT).show();
     }//replenish
 
 
-    private void withdraw(View view) {
-        String amount = enterAmount.getText().toString();
-        if (!amount.isEmpty()) {
-            Date dateNow = new Date();
-            SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd.MM.yyyy hh:mm");
-            String date = formatForDateNow.format(dateNow);
+    private void transfer(View view, String date, String numCardSender, int enterAmountSum) {
+        String numCardRecipient = ((AdapterSpinner) spinnerWhere.getAdapter())
+                .list.get(spinnerWhere.getSelectedItemPosition()).getCardNumber();
 
-            int enterAmountSum = Integer.parseInt(amount);
-            String numCardRecipient = spinnerWherefrom.getSelectedItem().toString();
-
+        if (!numCardRecipient.equals(numCardSender)) {
             if (selectedCartSender.getTotalAmount() >= enterAmountSum) {
                 //отправляем данные в активность с историей
                 datable.onGetDataFromDialog(date,
                         enterAmountSum,
                         selectedCartSender.getId(),
-                        numCardRecipient, WITHDRAW_MONEY, false);
+                        numCardRecipient, TRANSFER_MONEY, false);
                 dialogTemp.dismiss();
             } else Snackbar.make(view, "Недостаточно средств!", Snackbar.LENGTH_SHORT).show();
-        } else Snackbar.make(view, "Введите сумму!", Snackbar.LENGTH_SHORT).show();
-    }//replenish
-
-
-    private void transfer(View view) {
-        String amount = enterAmount.getText().toString();
-        if (!spinnerWherefrom.getSelectedItem().toString().
-                equals(spinnerWhere.getSelectedItem().toString())) {
-            if (!amount.isEmpty()) {
-                Date dateNow = new Date();
-                SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd.MM.yyyy hh:mm");
-                String date = formatForDateNow.format(dateNow);
-
-                int enterAmountSum = Integer.parseInt(amount);
-                String numCardRecipient = spinnerWhere.getSelectedItem().toString();
-
-                if (selectedCartSender.getTotalAmount() >= enterAmountSum) {
-                    //отправляем данные в активность с историей
-                    datable.onGetDataFromDialog(date,
-                            enterAmountSum,
-                            selectedCartSender.getId(),
-                            numCardRecipient, TRANSFER_MONEY, false);
-                    dialogTemp.dismiss();
-                } else Snackbar.make(view, "Недостаточно средств!", Snackbar.LENGTH_SHORT).show();
-            } else Snackbar.make(view, "Введите сумму!", Snackbar.LENGTH_SHORT).show();
         } else Snackbar.make(view, "Вы не можите указывать одну и туже карту!",
                 Snackbar.LENGTH_SHORT).show();
     }//transfer
@@ -215,7 +202,10 @@ public class DialogChangeTotalAmount extends DialogFragment {
     private AdapterView.OnItemSelectedListener itemSelectedListenerWhere = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            if (spinnerWhere.getSelectedItem().toString().equals("Ручной ввод")) {//сравниваем имя в спинере со значением
+            String numCard = ((AdapterSpinner) spinnerWhere.getAdapter())
+                    .list.get(spinnerWhere.getSelectedItemPosition()).getCardNumber();
+
+            if (numCard.equals("Ручной ввод")) {//сравниваем имя в спинере со значением
                 spinnerWhere.setVisibility(View.GONE);
                 editTextCardRecipient.setVisibility(View.VISIBLE);
             } else {
@@ -234,11 +224,8 @@ public class DialogChangeTotalAmount extends DialogFragment {
     private AdapterView.OnItemSelectedListener itemSelectedListenerWherefrom = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            String numCard = "";
-            if (Objects.requireNonNull(getArguments()).getInt("Select_action") == TRANSFER_MONEY) {
-                numCard = spinnerWherefrom.getSelectedItem().toString();
-            } else numCard = spinnerWherefrom.getSelectedItem().toString();
-
+            String numCard = ((AdapterSpinner) spinnerWherefrom.getAdapter())
+                    .list.get(spinnerWherefrom.getSelectedItemPosition()).getCardNumber();
             getCardByNumberCard(numCard);
         }//itemSelected
 
@@ -248,42 +235,40 @@ public class DialogChangeTotalAmount extends DialogFragment {
     };
 
 
-   //получаем список карт пользователя
-    private void getNumbersCard() {
-        disposNubbersCard = cardDao.allNumbersCardUser(idUser)
+    //получаем список карт пользователя
+    private void getCardsUser() {
+        disposNubbersCard = cardDao.allCardsUser(idUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(listNumbersCard -> {
+                .subscribe(listCardsUser -> {
                     disposNubbersCard.dispose();
                     FragmentActivity current = Objects.requireNonNull(getActivity());
 
                     //спинер с какой карты
-                    ArrayAdapter<String> adapterWherefrom = new ArrayAdapter<>(current, R.layout.spiner, listNumbersCard);
+                    AdapterSpinner adapterWherefrom = new AdapterSpinner(current, R.layout.spiner, listCardsUser);
                     spinnerWherefrom.setAdapter(adapterWherefrom);//устанавливаем адаптер в спинер
                     spinnerWherefrom.setSelection(0); // устанавливаем значение по умолчанию
                     spinnerWherefrom.setOnItemSelectedListener(itemSelectedListenerWherefrom);//устанавливаем слушатель на спинер
 
                     if (Objects.requireNonNull(getArguments()).getInt("Select_action") == TRANSFER_MONEY) {
                         //спинер на какую карту
-                        List<String> newListNumbersCard = new ArrayList<>(listNumbersCard);
-                        newListNumbersCard.add("Ручной ввод");
-                        ArrayAdapter<String> adapterWhere = new ArrayAdapter<>(current, R.layout.spiner, newListNumbersCard);
+                        List<Card> newListNumbersCard = new ArrayList<>(listCardsUser);
+                        newListNumbersCard.add(new Card(0, "Ручной ввод", 0, ""));
+                        AdapterSpinner adapterWhere = new AdapterSpinner(current, R.layout.spiner, newListNumbersCard);
                         spinnerWhere.setAdapter(adapterWhere);//устанавливаем адаптер в спинер
                         spinnerWhere.setSelection(0); // устанавливаем значение по умолчанию
                         spinnerWhere.setOnItemSelectedListener(itemSelectedListenerWhere);//устанавливаем слушатель на спинер
 
-
                         //получаем карту по ее номеру
-                        String numCard = spinnerWhere.getSelectedItem().toString();
+                        String numCard = newListNumbersCard.get(spinnerWherefrom.getSelectedItemPosition()).getCardNumber();
                         getCardByNumberCard(numCard);
                     }
 
                     if (Objects.requireNonNull(getArguments()).getInt("Select_action") == REPLENISH_CARD) {
                         //получаем карту по ее номеру
-                        String numCard = spinnerWherefrom.getSelectedItem().toString();
+                        String numCard = listCardsUser.get(spinnerWherefrom.getSelectedItemPosition()).getCardNumber();
                         getCardByNumberCard(numCard);
                     }
-
                 });
     }//getNumbersCard
 
