@@ -31,6 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
+        android:layout_marginTop="50dp"
         app:layoutManager="android.support.v7.widget.GridLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 

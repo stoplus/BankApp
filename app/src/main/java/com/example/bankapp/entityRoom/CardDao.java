@@ -25,9 +25,6 @@ public interface CardDao {
     @Query("SELECT * FROM cards WHERE id = :id")
     Flowable<Card> getCardById(int id);
 
-    @Query("SELECT COUNT(*) from cards")
-    int count();
-
     @Insert
     void insert(Card... cards);
 

@@ -2,9 +2,11 @@ package com.example.bankapp.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -36,6 +38,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static android.support.v4.app.ActivityOptionsCompat.makeSceneTransitionAnimation;
+
 public class MainActivity extends AppCompatActivity {
     @Inject
     CardDao cardDao;
@@ -55,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Card> tempListCards;
     private List<String> listAllNumbersCards;
     private final int MAX_RANDOM = 10000;
+    public static final String EXTRA_TRANSITION_NAME = "transition_name";
 
     @SuppressLint("InflateParams")
     @Override
@@ -67,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.idRecycler);
 
         MyApp.app().dataBaseComponent().inject(this);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle(getResources().getString(R.string.list_cards));
@@ -89,11 +95,8 @@ public class MainActivity extends AppCompatActivity {
             bloc.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
 
-            regCardButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    createNewCard(); //register a new card
-                }
+            regCardButton.setOnClickListener(v -> {
+                createNewCard(); //register a new card
             });
         } else showCards();
     }//setupWidget
@@ -130,7 +133,12 @@ public class MainActivity extends AppCompatActivity {
             int idCard = tempListCards.get(position).getId();
             Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
             intent.putExtra("idCard", idCard);
-            startActivity(intent);
+            intent.putExtra(EXTRA_TRANSITION_NAME, ViewCompat.getTransitionName(v));
+
+            ActivityOptionsCompat options = makeSceneTransitionAnimation(
+                    MainActivity.this, v, ViewCompat.getTransitionName(v));
+
+            startActivity(intent, options.toBundle());
             adapter = null;
         }//onItemClick
 
@@ -139,16 +147,14 @@ public class MainActivity extends AppCompatActivity {
             positionDelete = position;
             PopupMenu popup = new PopupMenu(v.getContext(), v, Gravity.CENTER);
             popup.inflate(R.menu.context_menu_card);
-            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    switch (item.getItemId()) {
-                        case R.id.deleteCard:
-                            deleteCard(tempListCards.get(position));
-                            return true;
-                    }//switch
-                    return false;
-                }//onMenuItemClick
+            //onMenuItemClick
+            popup.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.deleteCard:
+                        deleteCard(tempListCards.get(position));
+                        return true;
+                }//switch
+                return false;
             });
             popup.show();
         }//onItemLongClick

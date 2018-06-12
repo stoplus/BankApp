@@ -62,16 +62,8 @@ public class Card implements Parcelable {
         return idUser;
     }
 
-    public void setIdUser(int idUser) {
-        this.idUser = idUser;
-    }
-
     public String getCardNumber() {
         return cardNumber;
-    }
-
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
     }
 
     public int getTotalAmount() {
@@ -84,10 +76,6 @@ public class Card implements Parcelable {
 
     public String getPinCode() {
         return pinCode;
-    }
-
-    public void setPinCode(String pinCode) {
-        this.pinCode = pinCode;
     }
 
 

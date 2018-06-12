@@ -115,27 +115,13 @@ public class DialogChangeTotalAmount extends DialogFragment {
                 .setView(view);
 
         AlertDialog dialog = builder.create();
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(final DialogInterface dialog) {
-                dialogTemp = dialog;
-                Button buttonCancel = getDialog().findViewById(R.id.buttonCancel);
-                Button buttonOk = getDialog().findViewById(R.id.buttonOk);
+        dialog.setOnShowListener(dialog1 -> {
+            dialogTemp = dialog1;
+            Button buttonCancel = getDialog().findViewById(R.id.buttonCancel);
+            Button buttonOk = getDialog().findViewById(R.id.buttonOk);
 
-                buttonOk.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        selectAction(v);
-                    }
-                });
-
-                buttonCancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-            }
+            buttonOk.setOnClickListener(this::selectAction);
+            buttonCancel.setOnClickListener(v -> dialog1.dismiss());
         });
         return dialog;
     } // onCreateDialog
@@ -162,7 +148,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
 
                     switch (Objects.requireNonNull(getArguments()).getInt("Select_action")) {
                         case REPLENISH_CARD://Пополнить карту
-                            replenish(view, history);
+                            replenish(history);
                             break;
                         case WITHDRAW_MONEY://Снять деньги
                             withdraw(view, history);
@@ -180,7 +166,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
     }//selectAction
 
 
-    private void replenish(View view, History history) {
+    private void replenish(History history) {
         // send the data to the activity with the history
         history.setReplenishment(true);
         datable.onGetDataFromDialog(REPLENISH_CARD, history);
@@ -225,12 +211,9 @@ public class DialogChangeTotalAmount extends DialogFragment {
 
                     if (numCard.equals(getResources().getString(R.string.manual_input))) {//сравниваем имя в спинере со значением
                         setManualInput(false);
-                        closeManualInput.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                setManualInput(true);
-                                spinnerWhere.setSelection(0);// set the default value
-                            }
+                        closeManualInput.setOnClickListener(v -> {
+                            setManualInput(true);
+                            spinnerWhere.setSelection(0);// set the default value
                         });
                     } else {
                         setManualInput(true);

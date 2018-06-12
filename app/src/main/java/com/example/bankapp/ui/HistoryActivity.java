@@ -1,7 +1,7 @@
 package com.example.bankapp.ui;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.bankapp.ForDialog;
@@ -23,6 +24,7 @@ import com.example.bankapp.entityRoom.HistoryDao;
 import com.example.bankapp.entityRoom.UserDao;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -55,7 +57,6 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
     private TextView totalAmount;
     private CheckBox checkBox;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,9 +65,15 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle(getResources().getString(R.string.history_card));
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         MyApp.app().dataBaseComponent().inject(this);
         idCard = getIntent().getIntExtra("idCard", 0);
+
+        String imageTransitionName = getIntent().getStringExtra(MainActivity.EXTRA_TRANSITION_NAME);
+        LinearLayout itemCardLayout = findViewById(R.id.idItemCardLayout);
+        itemCardLayout.setTransitionName(imageTransitionName);
+
         updateData();
     }//onCreate
 
@@ -100,6 +107,9 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
             case R.id.replenish_account://пополнить
                 args.putInt("Select_action", REPLENISH_CARD);
                 break;
+            case android.R.id.home:
+                this.supportFinishAfterTransition();
+                return true;
         }//switch
 
         args.putInt("idUser", tempCard.getIdUser());
@@ -270,4 +280,9 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
             }//if
         }//for
     }//updateRecipientCard
+
+    @Override
+    public void onBackPressed() {
+        this.supportFinishAfterTransition();
+    }
 }//class HistoryActivity

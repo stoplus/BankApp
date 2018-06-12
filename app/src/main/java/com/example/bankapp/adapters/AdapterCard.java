@@ -2,6 +2,7 @@ package com.example.bankapp.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +10,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.bankapp.R;
-
 import com.example.bankapp.OnItemListener;
+import com.example.bankapp.R;
 import com.example.bankapp.entityRoom.Card;
 
 import java.util.ArrayList;
@@ -59,24 +59,18 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.ViewHolder> {
             totalAmount = view.findViewById(R.id.idTotalAmount);
             layout = view.findViewById(R.id.idItemCardLayout);
 
-            layout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemListener.onItemClick(getAdapterPosition(), v);
-                }
-            });
-            layout.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    onItemListener.onItemLongClick(getAdapterPosition(), v);
-                    return false;
-                }
+            layout.setOnClickListener(v -> onItemListener.onItemClick(getAdapterPosition(), v));
+            layout.setOnLongClickListener(v -> {
+                onItemListener.onItemLongClick(getAdapterPosition(), v);
+                return false;
             });
         }//ViewHolder
     }//class ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+        ViewCompat.setTransitionName(holder.layout, list.get(position).getCardNumber());
+
         holder.cardNumber.setText(list.get(position).getCardNumber());
         String total = String.valueOf(list.get(position).getTotalAmount());
         holder.totalAmount.setText(String.format("%s %s", total, context.getResources().getString(R.string.uah)));
