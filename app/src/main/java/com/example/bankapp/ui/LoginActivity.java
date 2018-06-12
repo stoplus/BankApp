@@ -218,7 +218,8 @@ public class LoginActivity extends AppCompatActivity {
         registerText.setVisibility(View.GONE);
         mRegisterButton.setVisibility(View.VISIBLE);
         flagSinIn = false;
-        Objects.requireNonNull(getSupportActionBar()).setSubtitle(getResources().getString(R.string.title_activity_register));
+        Objects.requireNonNull(getSupportActionBar()).setSubtitle(getResources()
+                .getString(R.string.title_activity_register));
     }//register
 
 
@@ -233,7 +234,8 @@ public class LoginActivity extends AppCompatActivity {
         registerText.setVisibility(View.VISIBLE);
         mRegisterButton.setVisibility(View.GONE);
         flagSinIn = true;
-        Objects.requireNonNull(getSupportActionBar()).setSubtitle(getResources().getString(R.string.title_activity_login));
+        Objects.requireNonNull(getSupportActionBar()).setSubtitle(getResources()
+                .getString(R.string.title_activity_login));
     }//setSingIn
 }//class LoginActivity
 

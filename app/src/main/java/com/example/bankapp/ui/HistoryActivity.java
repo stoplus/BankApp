@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.bankapp.ForDialog;
@@ -62,20 +61,33 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
+        setToolBar();
+        MyApp.app().dataBaseComponent().inject(this);
+        idCard = getIntent().getIntExtra("idCard", 0);
+
+        setTransitionName();
+        updateData();
+    }//onCreate
+
+
+    private void setToolBar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle(getResources().getString(R.string.history_card));
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }//setToolBar
 
-        MyApp.app().dataBaseComponent().inject(this);
-        idCard = getIntent().getIntExtra("idCard", 0);
 
-        String imageTransitionName = getIntent().getStringExtra(MainActivity.EXTRA_TRANSITION_NAME);
-        LinearLayout itemCardLayout = findViewById(R.id.idItemCardLayout);
-        itemCardLayout.setTransitionName(imageTransitionName);
+    //animation
+    private void setTransitionName() {
+        String cardTransitionName = getIntent().getStringExtra(MainActivity.EXTRA_TRANSITION_NAME_CARD);
+        String amountTransitionName = getIntent().getStringExtra(MainActivity.EXTRA_TRANSITION_NAME_AMOUNT);
 
-        updateData();
-    }//onCreate
+        cardNumber = findViewById(R.id.idCardNumber);
+        totalAmount = findViewById(R.id.idTotalAmount);
+        cardNumber.setTransitionName(cardTransitionName);
+        totalAmount.setTransitionName(amountTransitionName);
+    }//setTransitionName
 
 
     private void updateData() {
@@ -209,9 +221,7 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
 
 
     private void selectAction() {
-        if (cardNumber == null) {
-            cardNumber = findViewById(R.id.idCardNumber);
-            totalAmount = findViewById(R.id.idTotalAmount);
+        if (pinCode == null) {
             pinCode = findViewById(R.id.idPinCode);
             checkBox = findViewById(R.id.idCheckBoxPinCode);
         }

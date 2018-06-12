@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.bankapp.MyApp;
 import com.example.bankapp.OnItemListener;
@@ -59,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
     private List<Card> tempListCards;
     private List<String> listAllNumbersCards;
     private final int MAX_RANDOM = 10000;
-    public static final String EXTRA_TRANSITION_NAME = "transition_name";
+    public static final String EXTRA_TRANSITION_NAME_CARD = "transition_name_card";
+    public static final String EXTRA_TRANSITION_NAME_AMOUNT = "transition_name_amount";
 
     @SuppressLint("InflateParams")
     @Override
@@ -128,15 +131,19 @@ public class MainActivity extends AppCompatActivity {
 
     private OnItemListener onItemListener = new OnItemListener() {
         @Override
-        public void onItemClick(int position, View v) {
+        public void onItemClick(int position, View v, TextView cardNumber, TextView totalAmount) {
             //open history
             int idCard = tempListCards.get(position).getId();
             Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
             intent.putExtra("idCard", idCard);
-            intent.putExtra(EXTRA_TRANSITION_NAME, ViewCompat.getTransitionName(v));
+            intent.putExtra(EXTRA_TRANSITION_NAME_CARD, ViewCompat.getTransitionName(cardNumber));
+            intent.putExtra(EXTRA_TRANSITION_NAME_AMOUNT, ViewCompat.getTransitionName(totalAmount));
 
-            ActivityOptionsCompat options = makeSceneTransitionAnimation(
-                    MainActivity.this, v, ViewCompat.getTransitionName(v));
+            Pair<View, String> pCard = Pair.create(cardNumber, ViewCompat.getTransitionName(cardNumber));
+            Pair<View, String> pAmount = Pair.create(totalAmount, ViewCompat.getTransitionName(totalAmount));
+
+            ActivityOptionsCompat options =
+                    makeSceneTransitionAnimation(MainActivity.this, pCard, pAmount);
 
             startActivity(intent, options.toBundle());
             adapter = null;

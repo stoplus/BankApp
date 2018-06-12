@@ -23,6 +23,7 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.ViewHolder> {
     private OnItemListener onItemListener;
     private Context context;
 
+
     public AdapterCard(Context context, List<Card> list, OnItemListener onItemListener) {
         this.inflater = LayoutInflater.from(context);
         this.list = new ArrayList<>(list);
@@ -30,15 +31,18 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.ViewHolder> {
         this.context = context;
     }//AdapterForAdmin
 
+
     @Override
     public int getItemCount() {
         return list.size();
     }//getItemCount
 
+
     @Override
     public long getItemId(int position) {
         return position;
     }//getItemId
+
 
     @NonNull
     @Override
@@ -46,6 +50,7 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.ViewHolder> {
         View view = inflater.inflate(R.layout.item_card, parent, false);
         return new ViewHolder(view);
     } // onCreateViewHolder
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView cardNumber;
@@ -59,7 +64,8 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.ViewHolder> {
             totalAmount = view.findViewById(R.id.idTotalAmount);
             layout = view.findViewById(R.id.idItemCardLayout);
 
-            layout.setOnClickListener(v -> onItemListener.onItemClick(getAdapterPosition(), v));
+            layout.setOnClickListener(v ->
+                    onItemListener.onItemClick(getAdapterPosition(), v, cardNumber, totalAmount));
             layout.setOnLongClickListener(v -> {
                 onItemListener.onItemLongClick(getAdapterPosition(), v);
                 return false;
@@ -67,14 +73,18 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.ViewHolder> {
         }//ViewHolder
     }//class ViewHolder
 
+
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        ViewCompat.setTransitionName(holder.layout, list.get(position).getCardNumber());
+        ViewCompat.setTransitionName(holder.cardNumber, list.get(position).getCardNumber());
+        ViewCompat.setTransitionName(holder.totalAmount,
+                list.get(position).getCardNumber() + list.get(position).getTotalAmount());
 
         holder.cardNumber.setText(list.get(position).getCardNumber());
         String total = String.valueOf(list.get(position).getTotalAmount());
         holder.totalAmount.setText(String.format("%s %s", total, context.getResources().getString(R.string.uah)));
     }//onBindViewHolder
+
 
     public void deleteCardAdapter(int pos) {
         list.remove(pos);
