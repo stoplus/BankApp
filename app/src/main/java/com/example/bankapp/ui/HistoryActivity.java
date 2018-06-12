@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.bankapp.ForDialog;
@@ -73,8 +72,8 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
 
 
     private void updateData() {
-        getListHistoryCard(idCard);//получаем историю этой карты
-        getCard(idCard);//заполняем поля номер кары и сумма на карте
+        getListHistoryCard(idCard);//get the history of this card
+        getCard(idCard);
     }//updateData
 
 
@@ -92,7 +91,7 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
 
         int id = item.getItemId();
         switch (id) {
-            case R.id.send_money://перевести
+            case R.id.send_money:
                 args.putInt("Select_action", TRANSFER_MONEY);
                 break;
             case R.id.withdraw_money://снять
@@ -116,7 +115,7 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listHistory -> {
                     disposListHistoryCard.dispose();
-                    setListHistory(listHistory);//отображаем список
+                    setListHistory(listHistory);
                 });
     }//getListCardsUser
 
@@ -208,7 +207,7 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
         }
 
         pinCode.setText(tempCard.getPinCode());
-        checkBox.setOnCheckedChangeListener(listner);//устанавливаем слушатель на чекбокс видимости пароля
+        checkBox.setOnCheckedChangeListener(listner);// set the listener to the visibility pin-code checkbox
         cardNumber.setText(tempCard.getCardNumber());
         totalAmount.setText(String.format("%s %s", tempCard.getTotalAmount(), this.getResources().getString(R.string.uah)));
 
@@ -237,9 +236,9 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked) {
-                pinCode.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);//скрываем пароль
+                pinCode.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);//hide the password
             } else {
-                pinCode.setInputType(129);//показываем пароль
+                pinCode.setInputType(129);//show the password
             }//if
         }//onCheckedChanged
     };
@@ -263,7 +262,7 @@ public class HistoryActivity extends AppCompatActivity implements ForDialog {
                 int totalAmount = listCards.get(i).getTotalAmount() + history.getAmount();
                 listCards.get(i).setTotalAmount(totalAmount);
                 updateCard(listCards.get(i));
-                //сделать update истории карты получателя
+                // do update the history of the recipient's card
                 int id = listCards.get(i).getId();
                 history.setIdSenderCard(id);
                 history.setReplenishment(true);

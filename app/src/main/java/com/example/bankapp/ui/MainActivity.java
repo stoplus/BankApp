@@ -24,7 +24,6 @@ import com.example.bankapp.entityRoom.CardDao;
 import com.example.bankapp.entityRoom.HistoryDao;
 import com.example.bankapp.entityRoom.UserDao;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -71,14 +70,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle(getResources().getString(R.string.list_cards));
-        getListCardsUser(idUser);//получаем список карт
+        getListCardsUser(idUser);//get the list of cards
     }//onCreate
 
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        getListCardsUser(idUser);//получаем список карт
+        getListCardsUser(idUser);//get the list of cards
     }//onRestart
 
 
@@ -93,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             regCardButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    createNewCard(); //регистрируем новую карту
+                    createNewCard(); //register a new card
                 }
             });
         } else showCards();
@@ -109,12 +108,12 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.setAdapter(adapter);
         } else {
             if (positionDelete > -1) {
-                //удаляем
+                //delete
                 adapter.deleteCardAdapter(positionDelete);
                 positionDelete = -1;
                 adapterFlag = false;
             } else {
-                //добавляем
+                //add
                 if (adapterFlag) {
                     adapter = new AdapterCard(this, tempListCards, onItemListener);
                     recyclerView.setAdapter(adapter);
@@ -127,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
     private OnItemListener onItemListener = new OnItemListener() {
         @Override
         public void onItemClick(int position, View v) {
-            //открываем историю
+            //open history
             int idCard = tempListCards.get(position).getId();
             Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
             intent.putExtra("idCard", idCard);
@@ -249,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete() {
                         positionDelete = -1;
                         adapterFlag = true;
-                        getListCardsUser(idUser);//получаем список карт
+                        getListCardsUser(idUser);//get the list cards
                         Snackbar.make(view, getResources().getString(R.string.cardAdded), Snackbar.LENGTH_LONG).show();
                     }//onComplete
 
@@ -272,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete() {
                         adapterFlag = true;
-                        getListCardsUser(idUser);//получаем список карт
+                        getListCardsUser(idUser);//get the list cards
                         Snackbar.make(view, getResources().getString(R.string.cardDeleted), Snackbar.LENGTH_LONG).show();
                     }
 

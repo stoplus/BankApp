@@ -10,19 +10,15 @@ import android.os.Parcelable;
 public class Card implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private int id;
-
     @ColumnInfo(name = "idUser")
     private int idUser;
-
     @ColumnInfo(name = "cardNumber")
     private String cardNumber;
-
     @ColumnInfo(name = "totalAmount")
     private int totalAmount;
-
-
     @ColumnInfo(name = "pinCode")
     private String pinCode;
+
 
     public Card(int idUser, String cardNumber, int totalAmount, String pinCode) {
         this.idUser = idUser;
@@ -40,6 +36,7 @@ public class Card implements Parcelable {
         pinCode = in.readString();
     }
 
+
     public static final Creator<Card> CREATOR = new Creator<Card>() {
         @Override
         public Card createFromParcel(Parcel in) {
@@ -51,6 +48,7 @@ public class Card implements Parcelable {
             return new Card[size];
         }
     };
+
 
     public int getId() {
         return id;
@@ -92,10 +90,12 @@ public class Card implements Parcelable {
         this.pinCode = pinCode;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
     }
+
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -104,5 +104,5 @@ public class Card implements Parcelable {
         dest.writeString(cardNumber);
         dest.writeInt(totalAmount);
         dest.writeString(pinCode);
-    }
-}
+    }//writeToParcel
+}//class Card

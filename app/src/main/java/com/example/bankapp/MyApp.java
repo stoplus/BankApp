@@ -17,13 +17,13 @@ public class MyApp extends Application {
         dataBaseComponent = DaggerDataBaseComponent.builder()
                 .databaseModule(new DatabaseModule(getApplicationContext()))
                 .build();
-    }
+    }//onCreate
 
-    public static MyApp app(){
+    public static MyApp app() {
         return app;
     }
 
-    public DataBaseComponent dataBaseComponent(){
+    public DataBaseComponent dataBaseComponent() {
         return dataBaseComponent;
     }
 }//class MyApp

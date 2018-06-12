@@ -8,21 +8,17 @@ import android.arch.persistence.room.PrimaryKey;
 public class History {
     @PrimaryKey(autoGenerate = true)
     private int id;
-
     @ColumnInfo(name = "date")
     private String date;
-
     @ColumnInfo(name = "amount")
     private int amount;
-
     @ColumnInfo(name = "recipientCard")
     private String recipientCard;
-
     @ColumnInfo(name = "idSenderCard")
     private int idSenderCard;
-
     @ColumnInfo(name = "replenishment")
     private boolean replenishment;
+
 
     public History(String date, int amount, int idSenderCard, String recipientCard, boolean replenishment) {
         this.date = date;
@@ -32,6 +28,7 @@ public class History {
         this.replenishment = replenishment;
 
     }
+
 
     public int getId() {
         return id;
@@ -80,4 +77,4 @@ public class History {
     public void setReplenishment(boolean replenishment) {
         this.replenishment = replenishment;
     }
-}
+}//class History

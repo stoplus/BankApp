@@ -56,7 +56,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:text="PIN-код:"
+                    android:text="@string/pin"
                     android:textSize="17sp"
                     android:textStyle="bold" />
 
@@ -67,10 +67,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:fontFamily="sans-serif"
-                    android:hint="PIN-код"
+                    android:hint="@string/pin"
                     android:inputType="textPassword"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="TextViewEdits" />
 
 
                 <RelativeLayout
@@ -105,9 +106,8 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:paddingTop="50dp"
-                android:text="По этой карте не проводились операции"
+                android:text="@string/no_operation"
                 android:visibility="gone" />
-
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

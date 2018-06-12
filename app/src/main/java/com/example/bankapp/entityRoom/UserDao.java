@@ -15,15 +15,6 @@ public interface UserDao {
     @Query("SELECT * FROM users ORDER BY id")
     Flowable<List<User>> allUsers();
 
-    @Query("SELECT COUNT(*) from users")
-    int count();
-
     @Insert
     void insert(User... users);
-
-    @Update
-    void update(User user);
-
-    @Delete
-    void delete(User... users);
 }

@@ -12,7 +12,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="С карты"
+        android:text="@string/from_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,7 +35,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="На карту"
+        android:text="@string/on_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerWherefrom" />
@@ -47,25 +47,37 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewWhere"
-        android:orientation="vertical">
+        app:layout_constraintTop_toBottomOf="@+id/textViewWhere">
 
         <Spinner
             android:id="@+id/spinnerWhere"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
         <EditText
             android:id="@+id/idCardRecipient"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="№ карты получателя"
-            android:maxLength="16"
+            android:layout_weight="1"
+            android:hint="@string/num_card_recipient"
+            android:imeOptions="flagNoExtractUi"
             android:inputType="number"
-            android:visibility="gone"/>
+            android:maxLength="16"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/idClose"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:contentDescription="@string/close_manual_input"
+            android:src="@mipmap/close"
+            android:visibility="gone" />
 
     </LinearLayout>
 
@@ -78,8 +90,10 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="Сумма"
+        android:hint="@string/amount"
+        android:imeOptions="flagNoExtractUi"
         android:inputType="number"
+        android:maxLength="8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/idLayoutSpinner" />
@@ -91,20 +105,21 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="PIN-код"
+        android:hint="@string/pin_code"
+        android:imeOptions="flagNoExtractUi"
         android:inputType="number"
         android:maxLength="4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/idEnterAmount" />
+        app:layout_constraintTop_toBottomOf="@+id/idEnterAmount"
+        tools:ignore="TextFields" />
 
     <Button
         android:id="@+id/buttonCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Отмена"
+        android:text="@string/cancel"
         app:layout_constraintEnd_toStartOf="@+id/buttonOk"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/idEnterPin" />
@@ -114,10 +129,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Ок"
+        android:text="@string/ok"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/buttonCancel"
         app:layout_constraintTop_toBottomOf="@+id/idEnterPin" />
-
 
 </android.support.constraint.ConstraintLayout>

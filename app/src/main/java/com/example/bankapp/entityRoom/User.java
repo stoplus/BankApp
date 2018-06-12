@@ -8,17 +8,17 @@ import android.arch.persistence.room.PrimaryKey;
 public class User {
     @PrimaryKey(autoGenerate = true)
     private int id;
-
     @ColumnInfo(name = "email")
     private String email;
-
     @ColumnInfo(name = "password")
     private String password;
+
 
     public User(String email, String password) {
         this.email = email;
         this.password = password;
     }
+
 
     public int getId() {
         return id;
@@ -43,4 +43,4 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-}
+}//class User

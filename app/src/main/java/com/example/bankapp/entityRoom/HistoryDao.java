@@ -15,15 +15,6 @@ public interface HistoryDao {
     @Query("SELECT * FROM histories WHERE idSenderCard = :idCard")
     Flowable<List<History>> allHistoryCard(int idCard);
 
-    @Query("SELECT COUNT(*) from histories")
-    int count();
-
     @Insert
     void insert(History... histories);
-
-    @Update
-    void update(History history);
-
-    @Delete
-    void delete(History... histories);
 }

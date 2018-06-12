@@ -18,7 +18,9 @@ import com.example.bankapp.entityRoom.UserDao;
 public abstract class MyDatabase extends RoomDatabase {
 
     public abstract CardDao cardDao();
+
     public abstract HistoryDao historyDao();
+
     public abstract UserDao userDao();
 
     @NonNull

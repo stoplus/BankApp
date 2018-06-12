@@ -5,22 +5,22 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/idDate"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="10.02.2018" />
+    <TextView
+        android:id="@+id/idDate"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="10.02.2018" />
 
-        <TextView
-            android:id="@+id/idAmount"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:paddingEnd="20dp"
-            android:text="-250 грн."
-            android:textSize="20sp" />
+    <TextView
+        android:id="@+id/idAmount"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:paddingEnd="20dp"
+        android:text="-250 грн."
+        android:textSize="20sp" />
 
 </LinearLayout>

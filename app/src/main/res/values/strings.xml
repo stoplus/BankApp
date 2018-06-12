@@ -25,6 +25,7 @@
     <string name="exit">Выход</string>
 
     <string name="uah">грн.</string>
+    <string name="manual_input">Ручной ввод</string>
 
     <string name="send_money">Перевести</string>
     <string name="withdraw_money">Снять</string>
@@ -33,7 +34,27 @@
     <string name="list_cards">Список карт</string>
     <string name="history_card">История по карте</string>
 
+    <string name="replenish">Пополнить карту</string>
+    <string name="withdraw">Снять деньги</string>
+    <string name="transfer">Перевод между картами</string>
 
+    <string name="wrong_pin">Неправильный PIN-код!</string>
+    <string name="enter_pin">Введите PIN-код!</string>
+    <string name="enter_amount">Введите сумму!</string>
+    <string name="insufficient_funds">Недостаточно средств!</string>
+    <string name="change_card">Вы не можите указывать одну и туже карту!</string>
+
+    <string name="pin">PIN-код:</string>
+    <string name="no_operation">По этой карте не проводились операции</string>
+    <string name="no_card">У Вас нет карт. Зарегистрировать?</string>
+    <string name="from_card">С карты</string>
+    <string name="on_card">На карту</string>
+    <string name="num_card_recipient">№ карты получателя</string>
+    <string name="amount">Сумма</string>
+    <string name="pin_code">PIN-код</string>
+    <string name="cancel">Отмена</string>
+    <string name="ok">Ок</string>
+    <string name="close_manual_input">закрыть ручной ввод</string>
 
 
 </resources>

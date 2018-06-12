@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -181,7 +180,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onComplete() {//Вставляем новую
+                    public void onComplete() {//insert new
                         showProgress(false);
                         setSingIn();
                         Snackbar.make(view, getResources().getString(R.string.successful_register)
@@ -196,7 +195,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private boolean isEmailValid(String email) {
-        // TODO: 08.06.2018 добавить точку
         return email.contains("@");
     }//isEmailValid
 

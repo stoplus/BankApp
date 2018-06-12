@@ -14,7 +14,10 @@ import dagger.Component;
 @Component(modules = DatabaseModule.class)
 public interface DataBaseComponent {
     void inject(MainActivity mainActivity);
+
     void inject(LoginActivity loginActivity);
+
     void inject(HistoryActivity historyActivity);
+
     void inject(DialogChangeTotalAmount dialogChangeTotalAmount);
 }
