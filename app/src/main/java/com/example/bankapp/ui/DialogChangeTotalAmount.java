@@ -213,7 +213,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
                     String numCard = ((AdapterSpinner) spinnerWhere.getAdapter())
                             .list.get(spinnerWhere.getSelectedItemPosition()).getCardNumber();
 
-                    if (numCard.equals(res.getString(R.string.manual_input))) {//сравниваем имя в спинере со значением
+                    if (numCard.equals(res.getString(R.string.manual_input))) {//compare the name in the spinner with the value
                         setManualInput(false);
                         closeManualInput.setOnClickListener(v -> {
                             setManualInput(true);
@@ -247,8 +247,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
                 }//itemSelected
 
                 @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                }//auto-generated method
+                public void onNothingSelected(AdapterView<?> parent) { }//auto-generated method
             };
 
 
