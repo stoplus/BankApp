@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -58,6 +59,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
     private EditText enterAmount;
     private TextView pinCode;
     private ImageView closeManualInput;
+    private Resources res;
 
     @Override
     public void onAttach(Context context) {
@@ -83,6 +85,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
         spinnerWherefrom = view.findViewById(R.id.spinnerWherefrom);
         spinnerWhere = view.findViewById(R.id.spinnerWhere);
         closeManualInput = view.findViewById(R.id.idClose);
+        res = getResources();
 
         idUser = Objects.requireNonNull(getArguments()).getInt("idUser");
         String title = "";
@@ -90,21 +93,21 @@ public class DialogChangeTotalAmount extends DialogFragment {
         switch (Objects.requireNonNull(getArguments()).getInt("Select_action")) {
             case REPLENISH_CARD:
                 image = R.mipmap.put_money;
-                title = getResources().getString(R.string.replenish);
+                title = res.getString(R.string.replenish);
                 cardWherefrom.setVisibility(View.GONE);
                 cardWhere.setVisibility(View.GONE);
                 spinnerWhere.setVisibility(View.GONE);
                 break;
             case WITHDRAW_MONEY:
                 image = R.mipmap.get_money;
-                title = getResources().getString(R.string.withdraw);
+                title = res.getString(R.string.withdraw);
                 cardWherefrom.setVisibility(View.GONE);
                 cardWhere.setVisibility(View.GONE);
                 spinnerWhere.setVisibility(View.GONE);
                 break;
             case TRANSFER_MONEY:
                 image = R.mipmap.transfer;
-                title = getResources().getString(R.string.transfer);
+                title = res.getString(R.string.transfer);
                 break;
         }//switch
 
@@ -158,11 +161,11 @@ public class DialogChangeTotalAmount extends DialogFragment {
                             break;
                     }
                 } else
-                    Snackbar.make(view, getResources().getString(R.string.wrong_pin), Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(view, res.getString(R.string.wrong_pin), Snackbar.LENGTH_SHORT).show();
             } else
-                Snackbar.make(view, getResources().getString(R.string.enter_pin), Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(view, res.getString(R.string.enter_pin), Snackbar.LENGTH_SHORT).show();
         } else
-            Snackbar.make(view, getResources().getString(R.string.enter_amount), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, res.getString(R.string.enter_amount), Snackbar.LENGTH_SHORT).show();
     }//selectAction
 
 
@@ -180,7 +183,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
             datable.onGetDataFromDialog(WITHDRAW_MONEY, history);
             dialogTemp.dismiss();
         } else
-            Snackbar.make(view, getResources().getString(R.string.insufficient_funds), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, res.getString(R.string.insufficient_funds), Snackbar.LENGTH_SHORT).show();
     }//replenish
 
 
@@ -195,8 +198,8 @@ public class DialogChangeTotalAmount extends DialogFragment {
                 datable.onGetDataFromDialog(TRANSFER_MONEY, history);
                 dialogTemp.dismiss();
             } else
-                Snackbar.make(view, getResources().getString(R.string.insufficient_funds), Snackbar.LENGTH_SHORT).show();
-        } else Snackbar.make(view, getResources().getString(R.string.change_card),
+                Snackbar.make(view, res.getString(R.string.insufficient_funds), Snackbar.LENGTH_SHORT).show();
+        } else Snackbar.make(view, res.getString(R.string.change_card),
                 Snackbar.LENGTH_SHORT).show();
     }//transfer
 
@@ -209,7 +212,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
                     String numCard = ((AdapterSpinner) spinnerWhere.getAdapter())
                             .list.get(spinnerWhere.getSelectedItemPosition()).getCardNumber();
 
-                    if (numCard.equals(getResources().getString(R.string.manual_input))) {//сравниваем имя в спинере со значением
+                    if (numCard.equals(res.getString(R.string.manual_input))) {//сравниваем имя в спинере со значением
                         setManualInput(false);
                         closeManualInput.setOnClickListener(v -> {
                             setManualInput(true);
@@ -273,7 +276,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
             // Spiner on which card
             List<Card> newListNumbersCard = new ArrayList<>(listCardsUser);
             newListNumbersCard.add(new Card(0,
-                    getResources().getString(R.string.manual_input), 0, ""));
+                    res.getString(R.string.manual_input), 0, ""));
             AdapterSpinner adapterWhere = new AdapterSpinner(current, R.layout.spiner, newListNumbersCard);
             spinnerWhere.setAdapter(adapterWhere);// install the adapter in the spinner
             spinnerWhere.setSelection(0);// set the default value

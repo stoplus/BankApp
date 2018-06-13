@@ -13,6 +13,7 @@
     <string name="error_invalid_password">Пароль слишком короткий</string>
     <string name="error_incorrect_password">Этот пароль неверен</string>
     <string name="error_field_required">Это поле обязательно к заполнению</string>
+    <string name="isUser">Пользователь с таким Email уже существует!</string>
     <string name="register">Зарегистрироваться</string>
     <string name="singIn">Войти</string>
 

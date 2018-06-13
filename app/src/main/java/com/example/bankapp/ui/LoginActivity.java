@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean flagSinIn;
     private View view;
     private Disposable disposListUsers;
+    private Resources res;
 
     @SuppressLint("InflateParams")
     @Override
@@ -62,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
+        res = getResources();
         mPasswordView.setOnEditorActionListener((textView, id, keyEvent) -> {
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
                 attemptLogin();
@@ -113,9 +116,7 @@ public class LoginActivity extends AppCompatActivity {
             focusView.requestFocus();
         } else {
             showProgress(true);
-            if (flagSinIn) {
-                getListUsers(email, password);
-            } else insertUser(new User(email, password));
+            getListUsers(email, password);
         }
     }//attemptLogin
 
@@ -126,9 +127,26 @@ public class LoginActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listUsers -> {
                     disposListUsers.dispose();
-                    getResultSingIn(email, password, listUsers);
+                    if (flagSinIn) {
+                        getResultSingIn(email, password, listUsers);
+                    } else checkUser(email, password, listUsers);
                 });
     }//getListImageObj
+
+
+    private void checkUser(String email, String password, List<User> listUsers) {
+        boolean flag = true;
+        for (int i = 0; i < listUsers.size(); i++) {
+            if (listUsers.get(i).getEmail().equals(email)) {
+                flag = false;
+                Snackbar.make(view, res.getString(R.string.isUser)
+                        , Snackbar.LENGTH_LONG).show();
+                showProgress(false);
+                break;
+            } else flag = true;
+        }//for
+        if (flag) insertUser(new User(email, password));
+    }//checkUser
 
 
     private void getResultSingIn(String email, String password, List<User> listUsers) {
@@ -168,7 +186,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete() {//insert new
                         showProgress(false);
                         setSingIn();
-                        Snackbar.make(view, getResources().getString(R.string.successful_register)
+                        Snackbar.make(view, res.getString(R.string.successful_register)
                                 , Snackbar.LENGTH_INDEFINITE).show();
                     }//onComplete
 
@@ -190,7 +208,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void showProgress(final boolean show) {
-        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        int shortAnimTime = res.getInteger(android.R.integer.config_shortAnimTime);
 
         mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         mLoginFormView.animate().setDuration(shortAnimTime).alpha(
@@ -218,8 +236,8 @@ public class LoginActivity extends AppCompatActivity {
         registerText.setVisibility(View.GONE);
         mRegisterButton.setVisibility(View.VISIBLE);
         flagSinIn = false;
-        Objects.requireNonNull(getSupportActionBar()).setSubtitle(getResources()
-                .getString(R.string.title_activity_register));
+        Objects.requireNonNull(getSupportActionBar())
+                .setSubtitle(res.getString(R.string.title_activity_register));
     }//register
 
 
@@ -234,7 +252,7 @@ public class LoginActivity extends AppCompatActivity {
         registerText.setVisibility(View.VISIBLE);
         mRegisterButton.setVisibility(View.GONE);
         flagSinIn = true;
-        Objects.requireNonNull(getSupportActionBar()).setSubtitle(getResources()
+        Objects.requireNonNull(getSupportActionBar()).setSubtitle(res
                 .getString(R.string.title_activity_login));
     }//setSingIn
 }//class LoginActivity
