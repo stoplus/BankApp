@@ -133,7 +133,8 @@ public class DialogChangeTotalAmount extends DialogFragment {
     private void selectAction(View view) {
         String amount = enterAmount.getText().toString();
         String pin = pinCode.getText().toString();
-        if (!amount.isEmpty()) {
+        int amountSum = Integer.parseInt(amount);
+        if (!amount.isEmpty() && amountSum > 0) {
             if (!pin.isEmpty()) {
                 if (pin.equals(selectedCartSender.getPinCode())) {
                     int enterAmountSum = Integer.parseInt(amount);
