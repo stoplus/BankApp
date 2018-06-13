@@ -54,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
     private Disposable disposNubbersCard;
     private RecyclerView recyclerView;
     private View view;
-    private LinearLayout bloc;
+    private LinearLayout blocNoCard;
+    private LinearLayout blocHead;
     private int positionDelete = -1;
     private AdapterCard adapter;
     private boolean adapterFlag;
@@ -91,12 +92,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setupWidget() {
-        bloc = findViewById(R.id.idBloc);
+        blocHead = findViewById(R.id.idBlocHead);
+        blocNoCard = findViewById(R.id.idBlocNoCard);
         Button regCardButton = findViewById(R.id.regCardButton);
 
         if (tempListCards.size() == 0) {
-            bloc.setVisibility(View.VISIBLE);
+            blocNoCard.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
+            blocHead.setVisibility(View.GONE);
 
             regCardButton.setOnClickListener(v -> {
                 createNewCard(); //register a new card
@@ -106,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void showCards() {
-        bloc.setVisibility(View.GONE);
+        blocHead.setVisibility(View.VISIBLE);
+        blocNoCard.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
 
         if (adapter == null) {

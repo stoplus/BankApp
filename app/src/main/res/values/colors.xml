@@ -4,5 +4,11 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorBackgroundS">#edf2ff</color>
+    <color name="cardItem">#edf2ff</color>
     <color name="colorBlack">#000000</color>
+    <color name="listCard">#fffece</color>
+    <color name="listHistory">#87ff9f</color>
+    <color name="historyItemReplenishment">#1eff4b</color>
+    <color name="historyItemWithdraw">#ff4f4f</color>
+    <color name="linkColor">#01aeb5</color>
 </resources>
