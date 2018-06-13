@@ -219,9 +219,7 @@ public class DialogChangeTotalAmount extends DialogFragment {
                             setManualInput(true);
                             spinnerWhere.setSelection(0);// set the default value
                         });
-                    } else {
-                        setManualInput(true);
-                    }//if
+                    } else setManualInput(true);
                 }//itemSelected
 
                 @Override
