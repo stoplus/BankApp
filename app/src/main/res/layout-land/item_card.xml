@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
-            android:paddingEnd="100dp"
+            android:paddingEnd="10dp"
             android:text="200"
             android:textColor="@android:color/holo_green_dark"
             android:textSize="20sp" />
